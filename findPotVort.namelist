@@ -1,0 +1,5 @@
+&inputdata
+	vtkDataFile='ManyVorts_rm20_quadAMR5_rev2.0_dt0.001_0000.vtk'
+	outputPrefix='potVortTest'
+	time = 0.0
+/

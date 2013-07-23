@@ -1,0 +1,28 @@
+&gridInit
+	panelKind = 4
+	initNest = 4
+	AMR = 2
+	remeshInterval = 20
+	amrTol1 = 0.075
+	amrTol2 = 1.0
+/
+
+&vortInit
+	amp1 = 12
+	beta1 = 8
+	lat1 = 0.1745
+	lon1 = 0.0
+	amp2 = -10
+	beta2 = 6
+	lat2 = 0.35
+	lon2 = 0.35
+/
+
+&time
+	dt = 0.01
+	tfinal = 1.0
+/
+
+&fileIO
+	jobPrefix='twoVortsTest1'
+/

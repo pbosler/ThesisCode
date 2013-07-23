@@ -1,0 +1,19 @@
+&gridInit
+	initNest = 4
+	AMR = 2
+	useRelativeTol = 1
+	remeshInterval = 20
+	panelKind = 4
+	amrTol1 = 0.1
+	amrTol2 = 1.0
+	maxRefine = 2
+/
+
+&time
+	dt = 0.01
+	tfinal = 0.21
+/
+
+&fileIO
+	jobPrefix='jm87_stratModel_'
+/

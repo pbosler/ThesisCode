@@ -1,0 +1,16 @@
+&gridInit
+	initNest =4
+	AMR = 0
+	remeshInterval = 40
+	circTol = 0.1
+	variationTol = 0.1
+/
+
+&time
+	dt = 0.01
+	tfinal = 2.0
+/
+
+&fileIO
+	jobPrefix='RH2Wave_rm40_'
+/

@@ -1,0 +1,19 @@
+&gridInit
+	initNest = 4
+	AMR = 3
+	useRelativeTol = 1
+	remeshInterval = 20
+	panelKind = 4
+	amrTol1 = 0.05
+	amrTol2 = 1.0
+	maxRefine = 2
+/
+
+&time
+	dt = 0.0125
+	tfinal = 0.25
+/
+
+&fileIO
+	jobPrefix='adv_BlockM'
+/

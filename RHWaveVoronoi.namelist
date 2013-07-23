@@ -1,0 +1,16 @@
+&gridInit
+	initNest =3
+	AMR = 0
+	remeshInterval = 20
+	circTol = 0.1
+	variationTol = 0.1
+/
+
+&time
+	dt = 0.01
+	tfinal = 0.5
+/
+
+&fileIO
+	jobPrefix='stationaryRHWave_'
+/

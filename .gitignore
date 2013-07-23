@@ -1,0 +1,13 @@
+# Compiled source #
+###################
+*.o
+*.exe
+*.mod
+*.dat
+*.vtk
+*.gen_mod
+*~
+
+
+.DS_Store
+.DS_Store?

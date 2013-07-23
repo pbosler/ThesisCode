@@ -1,0 +1,19 @@
+&gridInit
+	initNest = 7
+	AMR = 0
+	useRelativeTol = 1
+	remeshInterval = 20
+	panelKind = 3
+	amrTol1 = 0.1
+	amrTol2 = 1.0
+	maxRefine = 2
+/
+
+&time
+	dt = 0.0125
+	tfinal = 5.0
+/
+
+&fileIO
+	jobPrefix='adv_GaussHills_'
+/

@@ -1,0 +1,10 @@
+&gridInit
+	initNest = 7
+	AMR = 0
+	nTracer = 0
+/
+
+&fileIO
+	delTriFilename='triangulationTest_nest7.vtk'
+	vorGridFilename='voronoiTest_nest7.vtk'
+/

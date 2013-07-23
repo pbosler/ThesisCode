@@ -1,0 +1,8 @@
+&filenames
+	vtkDataFile='../vtkOut/adv_SlotC__LG_triNest5_rev5.0_dt0.013_0400.vtk'
+	outputPrefix='slotC_tri5_final'
+/
+&interp
+	degreeSpacing=1.0
+	leftLonDeg=0.0
+/

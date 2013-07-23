@@ -1,0 +1,13 @@
+&gridInit
+	initNest =5
+	AMR = 0
+/
+
+&time
+	dt = 0.005
+	tfinal = 2.0
+/
+
+&fileIO
+	jobPrefix='gaussVortVoronoi_'
+/

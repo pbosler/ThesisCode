@@ -1,0 +1,16 @@
+&gridInit
+	initNest =4
+	AMR = 0
+	remeshInterval = 20
+	panelKind = 4
+	amrTol1 = 0.1
+	amrTol2 = 0.1
+/
+&time
+	dt = 0.01
+	tfinal = 0.5
+/
+
+&fileIO
+	jobPrefix='ManyVorts_panels_'
+/

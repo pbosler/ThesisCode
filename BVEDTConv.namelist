@@ -1,0 +1,14 @@
+&gridInit
+	panelKind = 3
+	initNest = 3
+	reproject = 0
+/
+
+&time
+	dt = 0.01
+	tfinal = 0.25
+/
+
+&fileIO
+	jobPrefix='bveDtConv'
+/

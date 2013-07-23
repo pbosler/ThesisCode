@@ -1,0 +1,17 @@
+&gridInit
+	initNest =4
+	AMR = 0
+	remeshInterval = 1000
+	panelKind = 3
+	amrTol1 = 1.0
+	amrTol2 = 1.0
+/
+&time
+	dt = 0.01
+	tfinal = 1.0
+/
+
+&fileIO
+outputDir='/Volumes/Warehouse/IUTAMPaper/rhWave/'
+	jobPrefix='noRemesh_'
+/
