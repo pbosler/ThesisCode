@@ -45,16 +45,17 @@ int main( int argc, const char *argv[]){
 	
 	/* CHANGE DATA PARAMETERS */
 		double dt = 0.01;
-		double relVortMin = 0.0;
-		double relVortMax = 12.0;
-		double relVortMin2 = -5.0;
-		double relVortMax2 = 5.0;
+		double relVortMin = -6.0;
+		double relVortMax = 6.0;
+		double relVortMin2 = 0.0;
+		double relVortMax2 = 12.0;
 		char scalarsDataName[16] = "relVortPanel";
 		char scalarsDataTitle[64] = "Rel. Vort.";
 		char scalarsDataName2[16] = "Tracer1";
 		char scalarsDataTitle2[64] = "Initial Latitude";
 		char titleString1[64] = "RH4 Wave";
 		char titleString2[64];
+		int jpgQuality = 55;
 	/* END CHANGE PARAMETERS */
 	
 	
@@ -102,6 +103,7 @@ int main( int argc, const char *argv[]){
 	for (int i=0;i<numColors;i++){
 		val = relVortMin + ((double)i/numColors)*range;
 		GetColorForValue_BlueWhiteOrangeRed(val,r,g, b,relVortMin,relVortMax);
+		//GetColorForValue_BlueYellowRed(val,r,g,b,relVortMin,relVortMax);
 		vortScale->SetTableValue(i,r,g,b);
 	}
 	vortScale->Build();
@@ -114,6 +116,7 @@ int main( int argc, const char *argv[]){
 	for (int i=0; i<numColors;i++){
 		val = relVortMin2 + ((double)i/numColors)*range2;
 		GetColorForValue_BlueWhiteOrangeRed(val,r,g,b,relVortMin2,relVortMax2);
+		//GetColorForValue_BlueYellowRed(val,r,g,b,relVortMin2,relVortMax2);
 		vortScale2->SetTableValue(i,r,g,b);
 	}
 	vortScale2->Build();
@@ -219,6 +222,7 @@ int main( int argc, const char *argv[]){
 	vtkWindowToImageFilter *win2im = vtkWindowToImageFilter::New();
 		win2im->SetInput(renWin);
 	vtkJPEGWriter *writer=vtkJPEGWriter::New();
+		writer->SetQuality(jpgQuality);
 	
 		
 	cout << "... done.\n";

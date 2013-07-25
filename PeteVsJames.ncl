@@ -7,9 +7,9 @@ begin
 ; Load interpolated data files and set plot title
 ;
 
-wks = gsn_open_wks("pdf","GaussVortPanels-LinRood")
 
-plot = new(3,graphic)
+
+plot = new(6,graphic)
 
 panel_res = True
 panel_res@cnInfoLabelOn = False
@@ -18,12 +18,14 @@ panel_res@gsnMaximize         = True
 ;
 ; Read data
 ;	
-nLat = 90
-nLon = 180
 
-dataDir="/Volumes/Warehouse/IUTAMPaper/gaussVort/contourPlots"
+dataDir="/Volumes/Warehouse/IUTAMPaper/gaussVort/contourPlots/"
+
+wks = gsn_open_wks("pdf",dataDir+"peteVsJames")
 
 ; James's data
+nLat = 90
+nLon = 180
 deg2file0=dataDir+"g2x2initRelVort.dat"
 deg2file1=dataDir+"g2x2t1relVort.dat"
 deg2file2=dataDir+"g2x2t2relVort.dat"
@@ -33,16 +35,30 @@ deg2t1 = asciiread(deg2file1,(/ nLat, nLon /), "double")
 deg2t2 = asciiread(deg2file2,(/ nLat, nLon /), "double")
 
 
+; Pete's data
+nLat = 181
+nLon = 360
+
+tri5file0=dataDir+"gvTri5_0__relVort.dat"
+tri5file1=dataDir+"gvTri5_1__relVort.dat"
+tri5file2=dataDir+"gvTri5_2__relVort.dat"
+
+tri5t0 = asciiread(tri5file0,(/ nLat, nLon /), "double")
+tri5t1 = asciiread(tri5file1,(/ nLat, nLon /), "double")
+tri5t2 = asciiread(tri5file2,(/ nLat, nLon /), "double")
+
+
+
 
 ; set contour levels
-	mnlvl = -5.0
+	mnlvl = -6.0
 	mxlvl = 6.0
 	lvlSpcng = 0.5
 	nCntrs = (mxlvl-mnlvl)/lvlSpcng + 1
 	
 	;gsn_define_colormap(wks,"BlWhRe")	
-	gsn_define_colormap(wks,"BlueYellowRed")	
-	;gsn_define_colormap(wks,"BlueWhiteOrangeRed")
+	;gsn_define_colormap(wks,"BlueYellowRed")	
+	gsn_define_colormap(wks,"BlueWhiteOrangeRed")
 	;gsn_define_colormap(wks,"testcmap")
 ;
 ;	Map Resources
@@ -85,7 +101,7 @@ deg2t2 = asciiread(deg2file2,(/ nLat, nLon /), "double")
 	map_res@gsnSpreadColorStart = 10
 	map_res@gsnSpreadColorEnd = -4
 	
-	map_res@lbLabelBarOn = True
+	map_res@lbLabelBarOn = False
 	
 	map_res@lbLabelStride = 2
 	map_res@lbTitleFontThicknessF = 0.08
@@ -108,31 +124,58 @@ deg2t2 = asciiread(deg2file2,(/ nLat, nLon /), "double")
 	map_res@sfYCEndV = 90.0
 	
 	;
+	; Annotation
+	;
+	amres = True
+	amres@amParallelPosF = -0.48
+	amres@amOrthogonalPosF = -0.45
+	amres@amJust = "TopLeft"
+	
+	txres = True
+	txres@txPerimOn = True
+	txres@txBackgroundFillColor = "White"
+	txres@txFontHeightF = 0.03
+	
+	txid = gsn_create_text(wks,"Eulerian, N = 16200",txres)
+	txid2 = gsn_create_text(wks,"LPPM, N = 20480",txres)
+	
+	;
 	; Build the plots
 	;	
 	map_res@tiMainString = "t = 0.0"
-	plot(0) = gsn_csm_contour_map_ce(wks,deg2t0,map_res)
 	
-	mnlvl = -5.0
-	mxlvl = 6.0
-	lvlSpcng = 0.5
-	map_res@cnMinLevelValF = mnlvl
-	map_res@cnMaxLevelValF = mxlvl
-	map_res@cnLevelSpacingF = lvlSpcng
+	plot(0) = gsn_csm_contour_map_ce(wks,deg2t0,map_res)
+	annid = gsn_add_annotation(plot(0),txid,amres)
+	map_res@tiMainOn = False
+	
+	plot(3) = gsn_csm_contour_map_ce(wks,tri5t0,map_res)
+	annoid = gsn_add_annotation(plot(3),txid2,amres)
+	
+;	mnlvl = -5.0
+;	mxlvl = 6.0
+;	lvlSpcng = 0.5
+;	map_res@cnMinLevelValF = mnlvl
+;	map_res@cnMaxLevelValF = mxlvl
+;	map_res@cnLevelSpacingF = lvlSpcng
 	
 	map_res@tiMainString = "t = 1.0"
+	map_res@tiMainOn = True
 	plot(1) = gsn_csm_contour_map_ce(wks,deg2t1,map_res)
+	map_res@tiMainOn = False
+	plot(4) = gsn_csm_contour_map_ce(wks,tri5t1,map_res)
 	
-	mnlvl = -5.0
-	mxlvl = 6.0
-	lvlSpcng = 0.5
-	map_res@cnMinLevelValF = mnlvl
-	map_res@cnMaxLevelValF = mxlvl
-	map_res@cnLevelSpacingF = lvlSpcng
+;	mnlvl = -5.0
+;	mxlvl = 6.0
+;	lvlSpcng = 0.5
+;	map_res@cnMinLevelValF = mnlvl
+;	map_res@cnMaxLevelValF = mxlvl
+;	map_res@cnLevelSpacingF = lvlSpcng
 	
-	
+	map_res@tiMainOn = True
 	map_res@tiMainString = "t = 2.0"
 	plot(2) = gsn_csm_contour_map_ce(wks,deg2t2,map_res)
+	map_res@tiMainOn = False
+	plot(5) = gsn_csm_contour_map_ce(wks,tri5t2,map_res)
 	
 	
 		
@@ -141,11 +184,11 @@ deg2t2 = asciiread(deg2file2,(/ nLat, nLon /), "double")
 	;	
 	;panel_res@txString = "Lin-Rood PPM, 2 x 2 deg"
 	;panel_res@txFontHeightF = 0.02
-	;panel_res@gsnPanelLabelBar = True
-	;panel_res@lbLabelFontHeightF = 0.01
-	;panel_res@lbLabelStride = 2
-	;panel_res@gsnPanelBottom   = 0.05
-	gsn_panel(wks,plot,(/1,3/),panel_res)
+	panel_res@gsnPanelLabelBar = True
+	panel_res@lbLabelFontHeightF = 0.01
+	panel_res@lbLabelStride = 2
+	panel_res@gsnPanelBottom   = 0.05
+	gsn_panel(wks,plot,(/2,3/),panel_res)
 
 	
 	

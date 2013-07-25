@@ -1,6 +1,6 @@
 &filenames
-	vtkDataFile='../vtkOut/adv_SlotC__LG_triNest5_rev5.0_dt0.013_0400.vtk'
-	outputPrefix='slotC_tri5_final'
+	vtkDataFile='/Volumes/Warehouse/IUTAMPaper/gaussVort/contourPlots/gaussVortUnif_t5_0200.vtk'
+	outputPrefix='gvTri5_2_'
 /
 &interp
 	degreeSpacing=1.0
