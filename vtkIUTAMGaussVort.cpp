@@ -18,6 +18,7 @@
 #include "vtkLookupTable.h"
 #include "vtkWindowToImageFilter.h"
 #include "vtkJPEGWriter.h"
+#include "vtkPNGWriter.h"
 #include <iostream>
 #include <cmath>
 #include <string.h>
@@ -39,23 +40,23 @@ int main( int argc, const char *argv[]){
 	char file0[256] = "/Volumes/Warehouse/IUTAMPaper/gaussVort/vtkOut/gaussVortTest_0000.vtk";
 	char file1[256] = "/Volumes/Warehouse/IUTAMPaper/gaussVort/vtkOut/gaussVortTest_0300.vtk";
 	
-	char jpgFile0[256] = "/Volumes/Warehouse/IUTAMPaper/gaussVort/jpgOut/gaussVort_AMR_row1.jpg";
-	char jpgFile1[256] = "/Volumes/Warehouse/IUTAMPaper/gaussVort/jpgOut/gaussVort_AMR_row2.jpg";
-
+	char jpgFile0[256] = "/Volumes/Warehouse/IUTAMPaper/gaussVort/jpgOut/gaussVort_AMR_row1_png.png";
+	char jpgFile1[256] = "/Volumes/Warehouse/IUTAMPaper/gaussVort/jpgOut/gaussVort_AMR_row2_png.png";
+	
 	
 	/* CHANGE DATA PARAMETERS */
 		double dt = 0.01;
-		double relVortMin = -6.0;
-		double relVortMax = 6.0;
-		double relVortMin2 = 0.0;
-		double relVortMax2 = 12.0;
+		double relVortMin = -8.0;
+		double relVortMax = 8.0;
+		double relVortMin2 = -8.0;
+		double relVortMax2 = 8.0;
 		char scalarsDataName[16] = "relVortPanel";
 		char scalarsDataTitle[64] = "Rel. Vort.";
 		char scalarsDataName2[16] = "Tracer1";
 		char scalarsDataTitle2[64] = "Initial Latitude";
 		char titleString1[64] = "RH4 Wave";
 		char titleString2[64];
-		int jpgQuality = 55;
+//		int jpgQuality = 55;
 	/* END CHANGE PARAMETERS */
 	
 	
@@ -102,8 +103,8 @@ int main( int argc, const char *argv[]){
 	double r, g, b, val;
 	for (int i=0;i<numColors;i++){
 		val = relVortMin + ((double)i/numColors)*range;
-		GetColorForValue_BlueWhiteOrangeRed(val,r,g, b,relVortMin,relVortMax);
-		//GetColorForValue_BlueYellowRed(val,r,g,b,relVortMin,relVortMax);
+		//GetColorForValue_BlueWhiteOrangeRed(val,r,g, b,relVortMin,relVortMax);
+		GetColorForValue_BlueYellowRed(val,r,g,b,relVortMin,relVortMax);
 		vortScale->SetTableValue(i,r,g,b);
 	}
 	vortScale->Build();
@@ -115,8 +116,8 @@ int main( int argc, const char *argv[]){
 	vortScale2->SetNumberOfTableValues(numColors);
 	for (int i=0; i<numColors;i++){
 		val = relVortMin2 + ((double)i/numColors)*range2;
-		GetColorForValue_BlueWhiteOrangeRed(val,r,g,b,relVortMin2,relVortMax2);
-		//GetColorForValue_BlueYellowRed(val,r,g,b,relVortMin2,relVortMax2);
+		//GetColorForValue_BlueWhiteOrangeRed(val,r,g,b,relVortMin2,relVortMax2);
+		GetColorForValue_BlueYellowRed(val,r,g,b,relVortMin2,relVortMax2);
 		vortScale2->SetTableValue(i,r,g,b);
 	}
 	vortScale2->Build();
@@ -160,22 +161,28 @@ int main( int argc, const char *argv[]){
 		sphereActor3->GetProperty()->SetEdgeColor(0.0,0.0,0.0);
 		sphereActor3->GetProperty()->SetColor(1.0,1.0,1.0);	
 		
+	vtkTextProperty *colorbarLabels = vtkTextProperty::New();
+		colorbarLabels->SetColor(0.0,0.0,0.0);
+		colorbarLabels->SetFontSize(12);
+				
 	vtkScalarBarActor *colorbar=vtkScalarBarActor::New();
-		colorbar->SetTitle(scalarsDataTitle);
-		colorbar->GetTitleTextProperty()->SetColor(0.0,0.0,0.0);
-		colorbar->GetLabelTextProperty()->SetColor(0.0,0.0,0.0);
+		//colorbar->SetTitle(scalarsDataTitle);
+		//colorbar->GetTitleTextProperty()->SetColor(0.0,0.0,0.0);
+		//colorbar->GetLabelTextProperty()->SetColor(0.0,0.0,0.0);
+		colorbar->SetLabelTextProperty(colorbarLabels);
 		colorbar->SetOrientationToVertical();
-		colorbar->SetPosition(0.025,0.1);
+		colorbar->SetPosition(0.015,0.1);
 		colorbar->SetPosition2(0.9,0.9);
 		colorbar->SetWidth(0.2);
 		colorbar->SetLookupTable(vortScale);
 		
 	vtkScalarBarActor *colorbar2=vtkScalarBarActor::New();
-		colorbar2->SetTitle(scalarsDataTitle2);
-		colorbar2->GetTitleTextProperty()->SetColor(0.0,0.0,0.0);
-		colorbar2->GetLabelTextProperty()->SetColor(0.0,0.0,0.0);
+		//colorbar2->SetTitle(scalarsDataTitle2);
+		//colorbar2->GetTitleTextProperty()->SetColor(0.0,0.0,0.0);
+		//colorbar2->GetLabelTextProperty()->SetColor(0.0,0.0,0.0);
+		colorbar2->SetLabelTextProperty(colorbarLabels);
 		colorbar2->SetOrientationToVertical();
-		colorbar2->SetPosition(0.025,0.1);
+		colorbar2->SetPosition(0.015,0.1);
 		colorbar2->SetPosition2(0.9,0.9);
 		colorbar2->SetWidth(0.2);
 		colorbar2->SetLookupTable(latScale);
@@ -188,8 +195,13 @@ int main( int argc, const char *argv[]){
 		
 	vtkCamera *camera = vtkCamera::New();
 		camera->SetPosition(5.0,0.0,1.0);
-		camera->SetFocalPoint(0.0,0.0,0.0);
 		camera->SetViewUp(0.0,0.0,1.0);
+		camera->SetFocalPoint(0.0,-0.2,0.0);
+
+	vtkCamera *camera2 = vtkCamera::New();
+		camera2->SetPosition(5.0,0.0,1.0);
+		camera2->SetFocalPoint(0.0,0.0,0.0);
+		camera2->SetViewUp(0.0,0.0,1.0);
 		
 	vtkRenderer *renderer = vtkRenderer::New();
 		renderer->AddActor(sphereActor);
@@ -206,12 +218,12 @@ int main( int argc, const char *argv[]){
 		renderer2->SetActiveCamera(camera);
 		//renderer2->SetBackground(0.9,0.9,0.9);
 		renderer2->SetBackground(1.0,1.0,1.0);
-		renderer2->SetViewport(0.333,0.0,0.666,1.0);
+		renderer2->SetViewport(0.666,0.0,1.0,1.0);
 	
 	vtkRenderer *renderer3 = vtkRenderer::New();
 		renderer3->AddActor(sphereActor3);
-		renderer3->SetActiveCamera(camera);
-		renderer3->SetViewport(0.666,0.0,1.0,1.0);
+		renderer3->SetActiveCamera(camera2);
+		renderer3->SetViewport(0.333,0.0,0.666,1.0);
 		renderer3->SetBackground(1.0,1.0,1.0);
 		
 	vtkRenderWindow *renWin=vtkRenderWindow::New();
@@ -221,8 +233,9 @@ int main( int argc, const char *argv[]){
 		renWin->SetSize(1800,600);
 	vtkWindowToImageFilter *win2im = vtkWindowToImageFilter::New();
 		win2im->SetInput(renWin);
-	vtkJPEGWriter *writer=vtkJPEGWriter::New();
-		writer->SetQuality(jpgQuality);
+//	vtkJPEGWriter *writer=vtkJPEGWriter::New();
+	vtkPNGWriter *writer=vtkPNGWriter::New();
+//		writer->SetQuality(jpgQuality);
 	
 		
 	cout << "... done.\n";
@@ -231,6 +244,11 @@ int main( int argc, const char *argv[]){
 	// RENDERING LOOP
 	cout << "... RENDERING ... \n";
 	
+		camera->SetPosition(2.5,-3.9686,2.0);
+		camera->SetFocalPoint(-0.1,-0.2,0.0);
+		camera2->SetPosition(2.5,-3.9686,2.0);
+		camera2->SetFocalPoint(0.0,0.0,0.0);
+		
 				
 		sphereMapper->SetInput(relVortData[0]->GetOutput());
 		sphereMapper2->SetInput(flowMapData[0]->GetOutput());
@@ -245,6 +263,9 @@ int main( int argc, const char *argv[]){
 		writer->Write();
 		
 		camera->SetPosition(2.5,-3.9686,2.0);
+		camera->SetFocalPoint(-0.1,-0.2,0.0);
+		camera2->SetPosition(2.5,-3.9686,2.0);
+		camera2->SetFocalPoint(0.0,0.0,0.0);
 		
 		sphereMapper->SetScalarRange(relVortMin2,relVortMax2);
 		sphereMapper->SetLookupTable(vortScale2);
@@ -275,6 +296,7 @@ int main( int argc, const char *argv[]){
 
 	
 	// Clean up
+	camera2->Delete();
 	writer->Delete();
 	win2im->Delete();
 	renWin->Delete();

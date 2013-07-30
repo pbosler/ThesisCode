@@ -173,6 +173,8 @@ plotRH4IUTAM.exe: vtkIUTAMrh4.o
 	g++ -o $@ vtkIUTAMrh4.o $(VTK_INCLUDE) $(VTK_LIB_DIR) $(VTK_LIBS)	
 plotGaussVortIUTAM.exe: vtkIUTAMGaussVort.o
 	g++ -o $@ vtkIUTAMGaussVort.o $(VTK_INCLUDE) $(VTK_LIB_DIR) $(VTK_LIBS)	
+plotUnifGaussVortIUTAM.exe: vtkIUTAMGaussVortUnif.o
+	g++ -o $@ vtkIUTAMGaussVortUnif.o $(VTK_INCLUDE) $(VTK_LIB_DIR) $(VTK_LIBS)	
 
 ############################
 # VTK object files		   #
@@ -201,3 +203,5 @@ vtkIUTAMrh4.o: vtkIUTAMrh4.cpp
 	g++ -c -Wno-deprecated -O2 $< $(VTK_INCLUDE)	
 vtkIUTAMGaussVort.o: vtkIUTAMGaussVort.cpp
 	g++ -c -Wno-deprecated -O2 $< $(VTK_INCLUDE)	
+vtkIUTAMGaussVortUnif.o: vtkIUTAMGaussVortUnif.cpp	
+	g++ -c -Wno-deprecated -O2 $< $(VTK_INCLUDE)		

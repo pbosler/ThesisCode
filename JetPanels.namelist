@@ -1,11 +1,11 @@
 &gridInit
-	initNest = 4
+	initNest = 5
 	AMR = 3
 	useRelativeTol = 1
-	remeshInterval = 10
+	remeshInterval = 20
 	panelKind = 4
 	amrTol1 = 0.08
-	amrTol2 = 1.0
+	amrTol2 = 1.2
 	newOmega = 6.283185307179586
 	maxRefine = 2
 /
@@ -13,12 +13,14 @@
 newOmega = 6.283185307179586
 
 &time
-	dt = 0.0025
+	dt = 0.00125
 	tfinal = 1.0
 /
 
 &fileIO
-	jobPrefix='jet_waveNum12_withRot_rm10'
+	outputDir='/Volumes/Warehouse/IUTAMPaper/jet/'
+	jobPrefix='jet_waveNum12_withRot_rm10_'
+	frameOut=4
 /
 
 &jetInit

@@ -19,7 +19,7 @@ type(Edges), pointer :: gridEdges=>null()
 type(Panels), pointer :: gridPanels=>null()
 integer(kint) :: panelKind, initNest, AMR, nTracer, remeshInterval
 integer(kint), parameter :: problemKind = BVE_SOLVER
-logical(klog) :: remeshFlag 
+logical(klog) :: remeshFlag
 integer(kint), parameter :: problemID = JET
 integer(kint) :: useRelativeTol, maxRefine
 real(kreal) :: amrTol1, amrTol2, newOmega
@@ -35,9 +35,9 @@ real(kreal), allocatable :: totalKineticEnergy(:), totalEnstrophy(:)
 ! Logger & Computation management variables
 type(Logger) :: exeLog
 integer(kint) :: logOut = 6
-character(len=28) :: logKey 
+character(len=28) :: logKey
 character(len=128) :: logString
-real(kreal) :: wtime, etime, etime0
+real(kreal) :: wtime, etime, etime0,  percentDone
 logical(klog) :: newEst
 integer(kint), parameter :: REAL_INIT_BUFFER_SIZE = 8, INT_INIT_BUFFER_SIZE = 7
 integer(kint) :: procRank, numProcs, mpiErrCode, intBuffer(INT_INIT_BUFFER_SIZE)
@@ -48,13 +48,14 @@ real(kreal) :: t, dt, tfinal
 integer(kint) :: timeJ, timesteps
 
 ! I/O & User variables
-character(len=128) :: jobPrefix
+character(len=128) :: jobPrefix, outputDir
 character(len=256) :: vtkRoot, vtkFile, dataFile
+character(len=48) :: amrString
 integer(kint), parameter :: readUnit = 12, writeUnit = 13
-integer(kint) :: readStat, writeStat
+integer(kint) :: readStat, writeStat, frameOut, frameCounter
 namelist /gridInit/ panelKind, initnest, AMR, remeshInterval, amrTol1, amrTol2, useRelativeTol, newOmega, maxRefine
 namelist /time/ dt, tfinal
-namelist /fileIO/ jobPrefix
+namelist /fileIO/ jobPrefix, outputDir, frameOut
 namelist /jetInit/ lat0, beta, perturbAmp, perturbWaveNum
 
 ! General variables
@@ -85,8 +86,8 @@ if ( procRank == 0) then
 		read(readunit,nml=fileIO)
 		rewind(readunit)
 		read(readunit,nml=jetInit)
-	close(readunit)	
-	
+	close(readunit)
+
 	intBuffer(1) = panelKind
 	intBuffer(2) = initNest
 	intBuffer(3) = AMR
@@ -94,7 +95,7 @@ if ( procRank == 0) then
 	intBuffer(5) = perturbWaveNum
 	intBuffer(6) = useRelativeTol
 	intBuffer(7) = maxRefine
-	
+
 	realBuffer(1) = amrTol1
 	realBuffer(2) = amrTol2
 	realBuffer(3) = dt
@@ -103,30 +104,8 @@ if ( procRank == 0) then
 	realBuffer(6) = lat0
 	realBuffer(7) = perturbAmp
 	realBuffer(8) = newOmega
-	
-	! Prepare output files
-	if ( panelKind == TRI_PANEL ) then
-		if ( AMR == 0) then
-			write(dataFile,'(A,A,I1,A,F3.1,A,F5.3,A)') trim(jobPrefix),'triNest',initNest,'_rev',tfinal,'_dt',dt,'.dat'
-			write(vtkRoot,'(A,A,A,I1,A,F3.1,A,F5.3,A)') 'vtkOut/',trim(jobPrefix),'triNest',initNest,'_rev',tfinal,'_dt',dt,'_'
-		else
-			write(dataFile,'(A,A,I1,A,F3.1,A,F5.3,A)') trim(jobPrefix),'triAMR',initNest,'_rev',tfinal,'_dt',dt,'.dat'
-			write(vtkRoot,'(A,A,A,I1,A,F3.1,A,F5.3,A)') 'vtkOut/',trim(jobPrefix),'triAMR',initNest,'_rev',tfinal,'_dt',dt,'_'
-		endif
-	elseif (panelKind == QUAD_PANEL ) then
-		if ( AMR == 0) then
-			write(dataFile,'(A,A,I1,A,F3.1,A,F5.3,A)') trim(jobPrefix),'quadNest',initNest,'_rev',tfinal,'_dt',dt,'.dat'
-			write(vtkRoot,'(A,A,A,I1,A,F3.1,A,F5.3,A)') 'vtkOut/',trim(jobPrefix),'quadNest',initNest,'_rev',tfinal,'_dt',dt,'_'
-		else
-			write(dataFile,'(A,A,I1,A,F3.1,A,F5.3,A)') trim(jobPrefix),'quadAMR',initNest,'_rev',tfinal,'_dt',dt,'.dat'
-			write(vtkRoot,'(A,A,A,I1,A,F3.1,A,F5.3,A)') 'vtkOut/',trim(jobPrefix),'quadAMR',initNest,'_rev',tfinal,'_dt',dt,'_'
-		endif
-	else
-		call LogMessage(exeLog,ERROR_LOGGING_LEVEL,logkey,' ERROR : Invalid panelKind.')
-		stop
-	endif
-	write(vtkFile,'(A,I0.4,A)') trim(vtkRoot),timeJ,'.vtk'
 endif
+
 call MPI_BCAST(intBuffer,INT_INIT_BUFFER_SIZE,MPI_INTEGER,0,MPI_COMM_WORLD,mpiErrCode)
 call MPI_BCAST(realBuffer,REAL_INIT_BUFFER_SIZE,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,mpiErrCode)
 
@@ -147,6 +126,9 @@ lat0 = realBuffer(6)
 perturbAmp = realBuffer(7)
 newOmega = realBuffer(8)
 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~!
+!	Part 2 : Initialize the grid		             !
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~!
 
 call SetOmega(newOmega)
 
@@ -160,14 +142,6 @@ totalKineticEnergy = 0.0_kreal
 allocate(totalEnstrophy(0:timesteps))
 totalEnstrophy = 0.0_kreal
 
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~!
-!	Part 2 : Initialize the grid		             !
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~!
-if (procRank == 0) then 
-	wtime = MPI_WTIME()
-	etime0 = MPI_WTIME()
-endif
-
 nTracer = 3
 call New(gridParticles,gridEdges,gridPanels,panelKind,initNest,AMR,nTracer,problemKind)
 !call LogMessage(exeLog,DEBUG_LOGGING_LEVEL,trim(logkey)//'0 gaussConst = ',gaussConst)
@@ -175,53 +149,53 @@ call InitJet(gridParticles,gridPanels,lat0,beta,perturbAmp,perturbWaveNum)
 !call LogMessage(exeLog,DEBUG_LOGGING_LEVEL,trim(logkey)//'1 gaussConst = ',gaussConst)
 if ( AMR > 0 ) then
 	call SetMaxRefinementLimit(maxRefine)
-	if ( useRelativeTol > 0 ) then
-		maxCirc = maxval(abs(gridPanels%relVort(1:gridPanels%N))*gridPanels%area(1:gridPanels%N))
-		baseVar = 0.0_kreal	
-		do j=1,gridPanels%N
-			if ( .NOT. gridPanels%hasChildren(j) ) then
-				maxx0 = gridPanels%x0(:,j)
-				minx0 = gridPanels%x0(:,j)
-				do k=1,panelKind
-					if ( gridParticles%x0(1,gridPanels%vertices(k,j)) > maxx0(1) ) then
-						maxx0(1) = gridParticles%x0(1,gridPanels%vertices(k,j))
-					endif
-					if ( gridParticles%x0(1,gridPanels%vertices(k,j)) < minx0(1) ) then
-						minx0(1) = gridParticles%x0(1,gridPanels%vertices(k,j))
-					endif
-					if ( gridParticles%x0(2,gridPanels%vertices(k,j)) > maxx0(2) ) then
-						maxx0(2) = gridParticles%x0(2,gridPanels%vertices(k,j))
-					endif
-					if ( gridParticles%x0(2,gridPanels%vertices(k,j)) < minx0(2) ) then
-						minx0(2) = gridParticles%x0(2,gridPanels%vertices(k,j))
-					endif
-					if ( gridParticles%x0(3,gridPanels%vertices(k,j)) > maxx0(3) ) then
-						maxx0(3) = gridParticles%x0(3,gridPanels%vertices(k,j))
-					endif
-					if ( gridParticles%x0(3,gridPanels%vertices(k,j)) < minx0(3) ) then
-						minx0(3) = gridParticles%x0(3,gridPanels%vertices(k,j))
-					endif
-				enddo
-				if ( sum(maxx0 - minx0) > baseVar ) baseVar = sum(maxx0 - minx0)
-			endif
-		enddo
-
-		circTol = amrTol1 * maxCirc
-		varTol = amrTol2 * baseVar
-		if ( procRank == 0 ) then
-			call LogMessage(exeLog,TRACE_LOGGING_LEVEL,trim(logKey)//' circTol = ',circTol)
-			call LogMessage(exeLog,TRACE_LOGGING_LEVEL,trim(logKey)//' varTol = ',varTol)
+	maxCirc = maxval(abs(gridPanels%relVort(1:gridPanels%N))*gridPanels%area(1:gridPanels%N))
+	baseVar = 0.0_kreal
+	do j=1,gridPanels%N
+		if ( .NOT. gridPanels%hasChildren(j) ) then
+			maxx0 = gridPanels%x0(:,j)
+			minx0 = gridPanels%x0(:,j)
+			do k=1,panelKind
+				if ( gridParticles%x0(1,gridPanels%vertices(k,j)) > maxx0(1) ) then
+					maxx0(1) = gridParticles%x0(1,gridPanels%vertices(k,j))
+				endif
+				if ( gridParticles%x0(1,gridPanels%vertices(k,j)) < minx0(1) ) then
+					minx0(1) = gridParticles%x0(1,gridPanels%vertices(k,j))
+				endif
+				if ( gridParticles%x0(2,gridPanels%vertices(k,j)) > maxx0(2) ) then
+					maxx0(2) = gridParticles%x0(2,gridPanels%vertices(k,j))
+				endif
+				if ( gridParticles%x0(2,gridPanels%vertices(k,j)) < minx0(2) ) then
+					minx0(2) = gridParticles%x0(2,gridPanels%vertices(k,j))
+				endif
+				if ( gridParticles%x0(3,gridPanels%vertices(k,j)) > maxx0(3) ) then
+					maxx0(3) = gridParticles%x0(3,gridPanels%vertices(k,j))
+				endif
+				if ( gridParticles%x0(3,gridPanels%vertices(k,j)) < minx0(3) ) then
+					minx0(3) = gridParticles%x0(3,gridPanels%vertices(k,j))
+				endif
+			enddo
+			if ( sum(maxx0 - minx0) > baseVar ) baseVar = sum(maxx0 - minx0)
 		endif
-	else
-		circTol = amrTol1
-		varTol = amrTol2
+	enddo
+
+	circTol = amrTol1 * maxCirc
+	varTol = amrTol2 * baseVar
+	if ( procRank == 0 ) then
+		call LogMessage(exeLog,TRACE_LOGGING_LEVEL,trim(logKey)//' circTol = ',circTol)
+		call LogMessage(exeLog,TRACE_LOGGING_LEVEL,trim(logKey)//' varTol = ',varTol)
+		call LogMessage(exeLog,TRACE_LOGGING_LEVEL,trim(logKey)//' maxNest will be ',initNest+MAX_REFINEMENT+1)
+		write(amrString,'(A,I1,A,I0.2,A)') 'AMR_',initNest,'to',initNest+MAX_REFINEMENT+1,'_'
 	endif
+
 	call InitRefine(gridParticles,gridEdges,gridPanels,circTol,varTol, problemID,&
-		lat0,beta,perturbAmp,perturbWaveNum,procRank)
-	
+		lat0,beta,perturbAmp,perturbWaveNum,procRank=procRank)
+
 	call InitJet(gridParticles,gridPanels,lat0,beta,perturbAmp,perturbWaveNum)
-	
+else
+	write(amrString,'(A,I1)') 'nest',initNest
 endif
+
 
 !
 ! Store initial latitude in tracer 1
@@ -251,10 +225,25 @@ enddo
 totalEnstrophy(0) = 0.5_kreal*sum(gridPanels%area(1:gridpanels%N)*&
 					gridPanels%relVort(1:gridPanels%N)*gridPanels%relVort(1:gridPanels%N))
 
-if ( procRank == 0 ) then
+
+frameCounter = 0
+if (procRank == 0) then
 	call PrintStats(gridParticles)
 	call PrintStats(gridEdges)
 	call PrintStats(gridPanels)
+
+	! prepare output files
+	if ( panelKind == 3) then
+		write(dataFile,'(A,A,A,A,A,F4.2,A,F6.4,A)') trim(outputDir),trim(jobPrefix),'_tri',trim(amrString),'_rev',tfinal,'_dt',dt,'_'
+	elseif (panelKind == 4) then
+		write(dataFile,'(A,A,A,A,A,F4.2,A,F6.4,A)') trim(outputDir),trim(jobPrefix),'_quad',trim(amrString),'_rev',tfinal,'_dt',dt,'_'
+	endif
+	write(vtkRoot,'(A,A,A)') trim(outputDir),'vtkOut/',trim(jobPrefix)
+	write(vtkFile,'(A,I0.4,A)') trim(vtkRoot),frameCounter,'.vtk'
+	write(dataFile,'(A,A)')trim(dataFile),'.dat'
+	wtime = MPI_WTIME()
+	etime0 = MPI_WTIME()
+
 	call vtkOutput(gridParticles,gridPanels,vtkFile)
 endif
 
@@ -262,10 +251,11 @@ endif
 !	Part 3 : Run the problem								    !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~!
 call MPI_BARRIER(MPI_COMM_WORLD,mpiErrCode)
-call LogMessage(exeLog,DEBUG_LOGGING_LEVEL,logKey,'Setup complete. Starting time integration.')
+if (procRank == 0) call LogMessage(exeLog,DEBUG_LOGGING_LEVEL,logKey,'Setup complete. Starting time integration.')
+
 call InitializeMPIRK4(gridParticles,gridPanels,procRank,numProcs)
 
-remeshFlag = .False.		
+remeshFlag = .False.
 newEst = .False.
 do timeJ = 0,timesteps-1
 	! Remesh if necessary
@@ -275,12 +265,12 @@ do timeJ = 0,timesteps-1
 		call LogMessage(exeLog,TRACE_LOGGING_LEVEL,logKey," Remesh triggered by remeshInterval.")
 	endif
 	if ( remeshFlag ) then
-		
+
 		call AdaptiveRemesh( gridParticles,gridEdges,gridPanels,&
 								initNest, AMR, circTol, varTol, &
 								procRank, problemID, &
 								lat0, beta, perturbAmp, perturbWaveNum)
-		
+
 		remeshFlag = .False.
 		call ResetRK4()
 		do j=1,gridParticles%N
@@ -304,34 +294,40 @@ do timeJ = 0,timesteps-1
 			call PrintStats(gridEdges)
 			call PrintStats(gridPanels)
 		endif
-		if ( abs(sum(gridPanels%relVort(1:gridPanels%N)*gridPanels%area(1:gridPanels%N))) > 0.1_kreal) then
-			call LogMessage(exeLog,WARNING_LOGGING_LEVEL,logKey,"Vorticity integral tolerance exceeded-- exiting.")
-			exit
-		endif	
+!		if ( abs(sum(gridPanels%relVort(1:gridPanels%N)*gridPanels%area(1:gridPanels%N))) > 0.1_kreal) then
+!			call LogMessage(exeLog,WARNING_LOGGING_LEVEL,logKey,"Vorticity integral tolerance exceeded-- exiting.")
+!			exit
+!		endif
 		newEst = .TRUE.
 	endif
-	
-	
-	
-	!if ( ( procRank == 0 .AND. timeJ == 1) .OR. (procRank == 0 .AND. newEst ) ) etime = MPI_WTIME()
+
+	!if ( procRank == 0 .AND. newEst ) etime = MPI_WTIME()
+
 	! Advance time
 	call BVERK4(gridParticles,gridPanels,dt,procRank,numProcs)
 	t = real(timeJ+1,kreal)*dt
-	
+
 	totalKineticEnergy(timeJ+1) = totalKE
 	totalEnstrophy(timeJ+1) = 0.5_kreal*sum(gridPanels%area(1:gridPanels%N)*&
 			gridPanels%relVort(1:gridPanels%N)*gridPanels%relVort(1:gridPanels%N))
 	if ( procRank == 0 ) then
 		if ( ( timeJ == 1) .OR. ( newEst) ) then
 			etime = MPI_WTIME() - etime0
-			write(logString,'(A,F9.3,A)') 'Estimated time left = ',((timesteps-timeJ)/timesteps)*etime/60.0,' minutes.'
+			write(logString,'(A,F9.3,A)') 'Elapsed time = ', etime/60.0_kreal, ' minutes.'
+			call LogMessage(exeLog,TRACE_LOGGING_LEVEL,logkey,logstring)
+			write(logString,'(A,F9.3,A)') 'Estimated time left = ',etime/(60.0_kreal*real(timeJ,kreal))*real(timesteps-timeJ),' minutes.'
 			call LogMessage(exeLog,TRACE_LOGGING_LEVEL,logKey,logString)
 			newEst = .False.
 		endif
-	
+
 		call LogMessage(exeLog,DEBUG_LOGGING_LEVEL,trim(logKey)//" t = ",t)
-		write(vtkFile,'(A,I0.4,A)') trim(vtkRoot),timeJ+1,'.vtk'
-		call vtkOutput(gridParticles,gridPanels,vtkFile)
+
+		if ( mod(timeJ+1,frameOut) == 0 ) then
+			frameCounter = frameCounter + 1
+			write(vtkFile,'(A,I0.4,A)') trim(vtkRoot),frameCounter,'.vtk'
+			call vtkOutput(gridParticles,gridPanels,vtkFile)
+		endif
+
 	endif
 enddo
 
@@ -347,7 +343,7 @@ if ( procRank == 0 ) then
 			write(writeUnit,'(2F24.15)') totalKineticEnergy(j), totalEnstrophy(j)
 		enddo
 	close(writeUnit)
-	
+
 	wTime = MPI_WTIME() - wtime
 	call LogMessage(exeLog,TRACE_LOGGING_LEVEL,logKey,"*** Program END ***")
 	call LogMessage(exeLog,TRACE_LOGGING_LEVEL,trim(logKey)//' data file = ',trim(dataFile))
@@ -364,8 +360,8 @@ if ( procRank == 0 ) then
 	endif
 	write(logString,'(A,F9.2,A)') " elapsed time = ",wtime/60.0_kreal," minutes."
 	call LogMessage(exeLog,TRACE_LOGGING_LEVEL,logKey,trim(logString))
-	
-	
+
+
 endif
 
 deallocate(totalKineticEnergy)
