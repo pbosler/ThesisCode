@@ -175,6 +175,8 @@ plotGaussVortIUTAM.exe: vtkIUTAMGaussVort.o
 	g++ -o $@ vtkIUTAMGaussVort.o $(VTK_INCLUDE) $(VTK_LIB_DIR) $(VTK_LIBS)	
 plotUnifGaussVortIUTAM.exe: vtkIUTAMGaussVortUnif.o
 	g++ -o $@ vtkIUTAMGaussVortUnif.o $(VTK_INCLUDE) $(VTK_LIB_DIR) $(VTK_LIBS)	
+plotJetIUTAM.exe: vtkIUTAMJet.o
+	g++ -o $@ vtkIUTAMJet.o $(VTK_INCLUDE) $(VTK_LIB_DIR) $(VTK_LIBS)	
 
 ############################
 # VTK object files		   #
@@ -204,4 +206,6 @@ vtkIUTAMrh4.o: vtkIUTAMrh4.cpp
 vtkIUTAMGaussVort.o: vtkIUTAMGaussVort.cpp
 	g++ -c -Wno-deprecated -O2 $< $(VTK_INCLUDE)	
 vtkIUTAMGaussVortUnif.o: vtkIUTAMGaussVortUnif.cpp	
-	g++ -c -Wno-deprecated -O2 $< $(VTK_INCLUDE)		
+	g++ -c -Wno-deprecated -O2 $< $(VTK_INCLUDE)
+vtkIUTAMJet.o: vtkIUTAMJet.cpp
+	g++ -c -Wno-deprecated -O2 $< $(VTK_INCLUDE)			
