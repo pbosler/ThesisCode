@@ -18,6 +18,7 @@
 #include "vtkLookupTable.h"
 #include "vtkWindowToImageFilter.h"
 #include "vtkJPEGWriter.h"
+#include "vtkPNGWriter.h"
 #include <iostream>
 #include <cmath>
 #include <string.h>
@@ -213,11 +214,11 @@ int main( int argc, const char *argv[]){
 		renWin->SetSize(1800,600);
 	vtkWindowToImageFilter *win2im = vtkWindowToImageFilter::New();
 		win2im->SetInput(renWin);
-	vtkJPEGWriter *writer=vtkJPEGWriter::New();
+	vtkPNGWriter *writer=vtkPNGWriter::New();
 	
-		char jpgFile0[256] = "/Volumes/Warehouse/IUTAMPaper/rhWave/jpgOut/rhWave_row1.jpg";
-		char jpgFile1[256] = "/Volumes/Warehouse/IUTAMPaper/rhWave/jpgOut/rhWave_row2.jpg";
-		char jpgFile2[256] = "/Volumes/Warehouse/IUTAMPaper/rhWave/jpgOut/rhWave_row3.jpg";
+		char jpgFile0[256] = "/Volumes/Warehouse/IUTAMPaper/rhWave/jpgOut/rhWave_row1.png";
+		char jpgFile1[256] = "/Volumes/Warehouse/IUTAMPaper/rhWave/jpgOut/rhWave_row2.png";
+		char jpgFile2[256] = "/Volumes/Warehouse/IUTAMPaper/rhWave/jpgOut/rhWave_row3.png";
 		
 	cout << "... done.\n";
 	
