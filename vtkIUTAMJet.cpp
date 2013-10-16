@@ -41,8 +41,8 @@ int main( int argc, const char *argv[]){
 	char file0[256] = "/Volumes/Warehouse/IUTAMPaper/jet/vtkOut/jet_waveNum12_withRot_rm10_0000.vtk";
 	char file1[256] = "/Volumes/Warehouse/IUTAMPaper/jet/vtkOut/jet_waveNum12_withRot_rm10_0200.vtk";
 	
-	char jpgFile0[256] = "/Volumes/Warehouse/IUTAMPaper/jet/jpgOut/jet_row1_adjustedColor.png";
-	char jpgFile1[256] = "/Volumes/Warehouse/IUTAMPaper/jet/jpgOut/jet_row2_adjustedColor.png";
+	char jpgFile0[256] = "/Volumes/Warehouse/IUTAMPaper/jet/jpgOut/jet_row1.png";
+	char jpgFile1[256] = "/Volumes/Warehouse/IUTAMPaper/jet/jpgOut/jet_row2.png";
 	
 	/* CHANGE DATA PARAMETERS */
 		double dt = 0.01;
@@ -116,7 +116,7 @@ int main( int argc, const char *argv[]){
 	for (int i=0;i<numColors;i++){
 		val = latMin + ((double)i/numColors)*range;
 		//GetColorForValue_MaizeBlue(val,r,g,b,latMin,latMax);
-		GetColorForValue_ColdToHotJet(val,r,g,b,latMin,latMax);
+		GetColorForValue_ColdToHot(val,r,g,b,latMin,latMax);
 		latScale->SetTableValue(i,r,g,b);
 	}
 	latScale->Build();
@@ -178,12 +178,12 @@ int main( int argc, const char *argv[]){
 		textActor1->GetTextProperty()->SetColor(0.0,0.0,0.0);
 		
 	vtkCamera *camera = vtkCamera::New();
-		camera->SetPosition(5.0,0.0,1.0);
+		camera->SetPosition(0.2,2.0,4.7);
 		camera->SetViewUp(0.0,0.0,1.0);
-		camera->SetFocalPoint(0.0,-0.2,0.0);
+		camera->SetFocalPoint(0.20,0.0,0.0);
 		
 	vtkCamera *camera2 = vtkCamera::New();
-		camera2->SetPosition(5.0,0.0,1.0);	
+		camera2->SetPosition(0.0,2.0,4.7);	
 		camera2->SetViewUp(0.0,0.0,1.0);
 		camera2->SetFocalPoint(0.0,0.0,0.0);
 				

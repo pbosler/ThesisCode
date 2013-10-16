@@ -40,19 +40,19 @@ int main( int argc, const char *argv[]){
 	char file0[256] = "/Volumes/Warehouse/IUTAMPaper/gaussVort/vtkOut/gaussVortTest_0000.vtk";
 	char file1[256] = "/Volumes/Warehouse/IUTAMPaper/gaussVort/vtkOut/gaussVortTest_0300.vtk";
 	
-	char jpgFile0[256] = "/Volumes/Warehouse/IUTAMPaper/gaussVort/jpgOut/gaussVort_AMR_row1_png.png";
-	char jpgFile1[256] = "/Volumes/Warehouse/IUTAMPaper/gaussVort/jpgOut/gaussVort_AMR_row2_png.png";
+	char jpgFile0[256] = "/Volumes/Warehouse/IUTAMPaper/gaussVort/jpgOut/gaussVort_AMR_row1_diffScale.png";
+	char jpgFile1[256] = "/Volumes/Warehouse/IUTAMPaper/gaussVort/jpgOut/gaussVort_AMR_row2_diffScale.png";
 	
 	
 	/* CHANGE DATA PARAMETERS */
 		double dt = 0.01;
-		double relVortMin = -8.0;
-		double relVortMax = 8.0;
+		double relVortMin = -12.0;
+		double relVortMax = 12.0;
 		double relVortMin2 = -8.0;
 		double relVortMax2 = 8.0;
-		char scalarsDataName[16] = "relVortPanel";
+		//char scalarsDataName[16] = "relVort";
 		char scalarsDataTitle[64] = "Rel. Vort.";
-		char scalarsDataName2[16] = "Tracer1";
+		//char scalarsDataName2[16] = "Tracer1";
 		char scalarsDataTitle2[64] = "Initial Latitude";
 		char titleString1[64] = "RH4 Wave";
 		char titleString2[64];
@@ -85,9 +85,9 @@ int main( int argc, const char *argv[]){
 	meshData[1]->SetFileName(file1);
 //	meshData[2]->SetFileName(file2);
 	
-	relVortData[0]->SetScalarsName("relVortPanel");
-	relVortData[1]->SetScalarsName("relVortPanel");
-	relVortData[2]->SetScalarsName("relVortPanel");
+	relVortData[0]->SetScalarsName("relVort");
+	relVortData[1]->SetScalarsName("relVort");
+	relVortData[2]->SetScalarsName("relVort");
 	flowMapData[0]->SetScalarsName("Tracer1");
 	flowMapData[1]->SetScalarsName("Tracer1");
 	flowMapData[2]->SetScalarsName("Tracer1");
