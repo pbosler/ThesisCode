@@ -51,8 +51,8 @@ int main( int argc, const char *argv[]){
 	char textString2[64];
 		
 	/* USERS ALTER THIS SECTION */
-	float dt = 0.005;	// time step size
-	double min = -12.0; // minimum scalar value to be plotted // TO DO: Determine this from the vtk data file
+	float dt = 0.01;	// time step size
+	double min = -4.0; // minimum scalar value to be plotted // TO DO: Determine this from the vtk data file
 	double max = 12.0;  // maximum scalar value to be plotted // TO DO: Determine this from the vtk data file
 	char scalarsDataName1[16] = "relVortPanel"; // vtk data name (must match .vtk file)
 	char scalarsDataName2[16] = "Tracer1" ;// vtk data name (must match .vtk file)
@@ -60,7 +60,7 @@ int main( int argc, const char *argv[]){
 	char scalarTitle2[64] = "Initial latitude"; // scalar label for plot 2
 	char titleString[64] = " "; // title for both plots
 	bool panel2LogScale = false; // use logarithmic color scale 
-	bool edgesOn = false;
+	bool edgesOn = true;
 	/* END USERS ALTERATION SECTION */
 	
 	int nActiveArray[21] = { 3900, 3936, 3984, 4056, 4080,
@@ -181,8 +181,8 @@ int main( int argc, const char *argv[]){
 		sphereActor2->SetMapper(sphereMapper2);
 		if (edgesOn){
 			sphereActor2->GetProperty()->EdgeVisibilityOn();
-			sphereActor2->GetProperty()->SetEdgeColor(0.098039,0.098039,0.4392156);
-			//sphereActor2->GetProperty()->SetEdgeColor(0.0, 1.0, 0.0);
+			//sphereActor2->GetProperty()->SetEdgeColor(0.098039,0.098039,0.4392156);
+			sphereActor2->GetProperty()->SetEdgeColor(0.0, 1.0, 0.0);
 			}
 //TO DO: Set log scale	if ( panel2LogScale ) sphereMapper2->GetLookupTable()->SetScaleToLog10();
 	vtkScalarBarActor *scalarBar2 = vtkScalarBarActor::New();
@@ -218,8 +218,8 @@ int main( int argc, const char *argv[]){
 	// setup camera for both panels
 	// Set up camera
 	vtkCamera *camera = vtkCamera::New();
-		//camera->SetPosition(2.6,-3.9,2.6);
-		camera->SetPosition(5,0,2);
+		camera->SetPosition(2.6,-3.9,2.6);
+		//camera->SetPosition(5,0,2);
 		camera->SetFocalPoint(0,0,0);
 		camera->SetViewUp(0,0,1);
 		
