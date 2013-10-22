@@ -132,9 +132,10 @@ subroutine InitializeMPIRK4(aParticles,aPanels,procRank,numProcs)
 		call InitLogger(log)
 		write(logKey,'(A,I1,A)') 'PanelVelocityMPI ',procRank,' : '
 	endif
-
+	
 	call LogMessage(log,DEBUG_LOGGING_LEVEL,trim(logKey)//" hello from process ",procRank)
-
+	
+	
 	allocate(particlesIndexStart(0:numProcs-1))
 	allocate(particlesIndexEnd(0:numProcs-1))
 	allocate(particlesMessageSize(0:numProcs-1))
@@ -158,7 +159,7 @@ subroutine InitializeMPIRK4(aParticles,aPanels,procRank,numProcs)
 
 	mpiIsReady = .True.
 
-	!call LoadBalance(aParticles,aPanels,numProcs)
+	call LoadBalance(aParticles,aPanels,numProcs)
 
 end subroutine
 
@@ -202,7 +203,7 @@ subroutine LoadBalance(aParticles,aPanels,numProcs)
 		passivePanelsIndexEnd(numProcs-1) = nPassive
 		passivePanelsMessageSize = passivePanelsIndexEnd - passivePanelsIndexStart + 1
 
-		!call LogMessage(log,DEBUG_LOGGING_LEVEL,logKey,'LoadBalance complete.')
+		call LogMessage(log,DEBUG_LOGGING_LEVEL,logKey,'LoadBalance complete.')
 	else
 
 		call LogMessage(log,ERROR_LOGGING_LEVEL,logKey,'LoadBalance ERROR : MPI arrays not ready.')

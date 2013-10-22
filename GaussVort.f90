@@ -216,9 +216,12 @@ endif
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~!
 
 call MPI_BARRIER(MPI_COMM_WORLD,mpiErrCode)
-if ( procRank == 0 ) call LogMessage(exeLog,DEBUG_LOGGING_LEVEL,logKey,'Setup complete. Starting time integration.')
-
+!if ( procRank == 0 ) call LogMessage(exeLog,DEBUG_LOGGING_LEVEL,logKey,'Setup complete. Starting time integration.')
+call LogMessage(exeLog,DEBUG_LOGGING_LEVEL,logKey,'Setup complete. Starting time integration.')
+call MPI_BARRIER(MPI_COMM_WORLD,mpiErrCode)
 call InitializeMPIRK4(gridParticles,gridPanels,procRank,numProcs)
+call MPI_BARRIER(MPI_COMM_WORLD,mpiErrCode)
+call LogMessage(exeLog,DEBUG_LOGGING_LEVEL,logKey,'MPI initialized')
 
 remeshFlag = .False.
 newEstimate = .False.

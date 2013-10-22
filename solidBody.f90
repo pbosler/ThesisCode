@@ -233,7 +233,7 @@ endif
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~!
 !	Part 3 : Run the problem								    !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~!
-call MPI_BARRIER(MPI_COMM_WORLD)
+
 call LogMessage(exeLog,DEBUG_LOGGING_LEVEL,logKey,'Setup complete. Starting time integration ...')
 
 call InitializeMPIRK4(gridParticles,gridPanels,procRank,numProcs)

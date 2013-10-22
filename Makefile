@@ -4,7 +4,8 @@
 #  	Default	Compilers  	 #
 ##########################
 FF=ifort
-FF_FLAGS=-O2 
+#FF_FLAGS=-O0 -g -openmp -check bounds -check pointers -check uninit -traceback -warn all -debug extended
+FF_FLAGS=-O2
 CPP=icpc
 CPP_FLAGS=-O2
 

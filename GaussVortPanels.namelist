@@ -1,5 +1,5 @@
 &gridInit
-initNest = 5
+initNest = 3
 AMR = 0
 remeshInterval = 20
 panelKind = 3
@@ -8,12 +8,12 @@ amrTol2 = 1.0
 /
 
 &time
-dt = 0.005
-tfinal = 2.0
+dt = 0.01
+tfinal = 0.02
 /
 
 &fileIO
-outputDir='/Volumes/Warehouse/IUTAMPaper/gaussVort/'
-jobPrefix='gaussVortUnif_t5_'
-frameOut = 2
+outputDir='./'
+jobPrefix='gaussVort_debug_'
+frameOut = 1
 /
