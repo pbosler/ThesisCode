@@ -178,12 +178,14 @@ int main( int argc, const char *argv[]){
 		textActor1->GetTextProperty()->SetColor(0.0,0.0,0.0);
 		
 	vtkCamera *camera = vtkCamera::New();
-		camera->SetPosition(0.2,2.0,4.7);
+		//camera->SetPosition(0.2,2.0,4.7);
+		camera->SetPosition(0.21,2.0,4.465);
 		camera->SetViewUp(0.0,0.0,1.0);
-		camera->SetFocalPoint(0.20,0.0,0.0);
+		camera->SetFocalPoint(0.21,0.0,0.0);
 		
 	vtkCamera *camera2 = vtkCamera::New();
-		camera2->SetPosition(0.0,2.0,4.7);	
+		//camera2->SetPosition(0.0,2.0,4.7);	
+		camera2->SetPosition(0.0,2.0,4.465);	
 		camera2->SetViewUp(0.0,0.0,1.0);
 		camera2->SetFocalPoint(0.0,0.0,0.0);
 				

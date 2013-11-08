@@ -1,17 +1,17 @@
 &gridInit
-	initNest =4
+	initNest =3
 	AMR = 0
-	remeshInterval = 1000
+	remeshInterval = 20
 	panelKind = 3
 	amrTol1 = 1.0
 	amrTol2 = 1.0
 /
 &time
-	dt = 0.01
+	dt = 0.005
 	tfinal = 1.0
 /
 
 &fileIO
-outputDir='/Volumes/Warehouse/IUTAMPaper/rhWave/'
-	jobPrefix='noRemesh_'
+outputDir='~/Desktop/rh4Wave/'
+	jobPrefix='tableCalcs_rm20_'
 /

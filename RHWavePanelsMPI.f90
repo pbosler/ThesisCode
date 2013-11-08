@@ -104,8 +104,8 @@ if ( procRank == 0) then
 		endif
 	elseif (panelKind == QUAD_PANEL ) then
 		if ( AMR == 0) then
-			write(dataFile,'(A,A,I1,A,F3.1,A,F5.3,A)') trim(jobPrefix),'LG_quadNest',initNest,'_rev',tfinal,'_dt',dt,'.dat'
-			write(vtkRoot,'(A,A,A,I1,A,F3.1,A,F5.3,A)') 'vtkOut/',trim(jobPrefix),'LG_quadNest',initNest,'_rev',tfinal,'_dt',dt,'_'
+			write(dataFile,'(A,A,A,I1,A,F3.1,A,F5.3,A)') trim(outputDir),trim(jobPrefix),'LG_quadNest',initNest,'_rev',tfinal,'_dt',dt,'.dat'
+			write(vtkRoot,'(A,A,A,A,I1,A,F3.1,A,F5.3,A)') trim(outputDir),'vtkOut/',trim(jobPrefix),'LG_quadNest',initNest,'_rev',tfinal,'_dt',dt,'_'
 			write(vtkRoot2,'(A,A)') trim(vtkRoot),'_active_'
 		else
 			write(dataFile,'(A,A,I1,A,F3.1,A,F5.3,A)') trim(jobPrefix),'LG_quadAMR',initNest,'_rev',tfinal,'_dt',dt,'.dat'
@@ -301,6 +301,8 @@ do timeJ = 0,timesteps-1
 		if ( .NOT. gridPanels%hasChildren(j) ) then
 			gridPanels%tracer(j,3) = abs(gridPanels%relVort(j) - &
 						HaurwitzStationary4RelVort(gridPanels%x(:,j)))
+		else
+			gridPanels%tracer(j,3) = 0.0_kreal
 		endif
 	enddo
 	l1(timeJ+1) = sum(gridPanels%tracer(1:gridPanels%N,3)*gridPanels%area(1:gridPanels%N))/l1Denom

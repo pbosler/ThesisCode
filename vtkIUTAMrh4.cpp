@@ -150,7 +150,7 @@ int main( int argc, const char *argv[]){
 		colorbar->SetLabelTextProperty(colorbarLabels);
 		//colorbar->GetLabelTextProperty()->SetFontSize(12);
 		colorbar->SetOrientationToVertical();
-		colorbar->SetPosition(0.015,0.1);
+		colorbar->SetPosition(0.005,0.1);
 		colorbar->SetPosition2(0.9,0.9);
 		colorbar->SetWidth(0.2);
 		colorbar->SetLookupTable(vortScale);
@@ -163,7 +163,7 @@ int main( int argc, const char *argv[]){
 		//colorbar2->GetLabelTextProperty()->SetFontSize(12);
 		colorbar2->SetLabelTextProperty(colorbarLabels);
 		colorbar2->SetOrientationToVertical();
-		colorbar2->SetPosition(0.015,0.1);
+		colorbar2->SetPosition(0.005,0.1);
 		colorbar2->SetPosition2(0.9,0.9);
 		colorbar2->SetWidth(0.2);
 		colorbar2->SetLookupTable(latScale);
@@ -175,12 +175,14 @@ int main( int argc, const char *argv[]){
 		textActor1->GetTextProperty()->SetColor(0.0,0.0,0.0);
 		
 	vtkCamera *camera = vtkCamera::New();
-		camera->SetPosition(5.0,0.0,1.0);
+		//camera->SetPosition(5.0,0.0,1.0);
+		camera->SetPosition(4.625,0.0,0.925);
 		camera->SetViewUp(0.0,0.0,1.0);
 		camera->SetFocalPoint(0.0,-0.2,0.0);
 		
 	vtkCamera *camera2 = vtkCamera::New();
-		camera2->SetPosition(5.0,0.0,1.0);	
+		//camera2->SetPosition(5.0,0.0,1.0);	
+		camera2->SetPosition(4.625,0.0,0.925);	
 		camera2->SetViewUp(0.0,0.0,1.0);
 		camera2->SetFocalPoint(0.0,0.0,0.0);
 				

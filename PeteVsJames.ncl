@@ -51,14 +51,14 @@ tri5t2 = asciiread(tri5file2,(/ nLat, nLon /), "double")
 
 
 ; set contour levels
-	mnlvl = -6.0
-	mxlvl = 6.0
-	lvlSpcng = 0.5
+	mnlvl = -12.0
+	mxlvl = 12.0
+	lvlSpcng = 1.0
 	nCntrs = (mxlvl-mnlvl)/lvlSpcng + 1
 	
 	;gsn_define_colormap(wks,"BlWhRe")	
-	;gsn_define_colormap(wks,"BlueYellowRed")	
-	gsn_define_colormap(wks,"BlueWhiteOrangeRed")
+	gsn_define_colormap(wks,"BlueYellowRed")	
+;	gsn_define_colormap(wks,"BlueWhiteOrangeRed")
 	;gsn_define_colormap(wks,"testcmap")
 ;
 ;	Map Resources
@@ -98,8 +98,8 @@ tri5t2 = asciiread(tri5file2,(/ nLat, nLon /), "double")
 	
 	map_res@cnFillOn = True
 	map_res@gsnSpreadColors = True
-	map_res@gsnSpreadColorStart = 10
-	map_res@gsnSpreadColorEnd = -4
+	map_res@gsnSpreadColorStart = 2
+	map_res@gsnSpreadColorEnd = -2
 	
 	map_res@lbLabelBarOn = False
 	
@@ -109,6 +109,7 @@ tri5t2 = asciiread(tri5file2,(/ nLat, nLon /), "double")
 	map_res@lbLabelFontHeightF = 0.0175
 	
 	map_res@pmTickMarkDisplayMode = "Always"
+;	map_res@pmTickMarkDisplayMode = "Never"
 	
 	map_res@cnLinesOn = False
 	map_res@cnLineDashPattern = 0
@@ -134,7 +135,7 @@ tri5t2 = asciiread(tri5file2,(/ nLat, nLon /), "double")
 	txres = True
 	txres@txPerimOn = True
 	txres@txBackgroundFillColor = "White"
-	txres@txFontHeightF = 0.03
+	txres@txFontHeightF = 0.035
 	
 	txid = gsn_create_text(wks,"Eulerian, N = 16200",txres)
 	txid2 = gsn_create_text(wks,"LPPM, N = 20480",txres)
@@ -143,6 +144,7 @@ tri5t2 = asciiread(tri5file2,(/ nLat, nLon /), "double")
 	; Build the plots
 	;	
 	map_res@tiMainString = "t = 0.0"
+	map_res@tiMainFontHeightF = 0.035
 	
 	plot(0) = gsn_csm_contour_map_ce(wks,deg2t0,map_res)
 	annid = gsn_add_annotation(plot(0),txid,amres)

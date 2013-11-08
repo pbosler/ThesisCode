@@ -40,16 +40,16 @@ int main( int argc, const char *argv[]){
 	char file0[256] = "/Volumes/Warehouse/IUTAMPaper/gaussVort/vtkOut/gaussVortTest_0000.vtk";
 	char file1[256] = "/Volumes/Warehouse/IUTAMPaper/gaussVort/vtkOut/gaussVortTest_0300.vtk";
 	
-	char jpgFile0[256] = "/Volumes/Warehouse/IUTAMPaper/gaussVort/jpgOut/gaussVort_AMR_row1_diffScale.png";
-	char jpgFile1[256] = "/Volumes/Warehouse/IUTAMPaper/gaussVort/jpgOut/gaussVort_AMR_row2_diffScale.png";
+	char jpgFile0[256] = "/Volumes/Warehouse/IUTAMPaper/gaussVort/jpgOut/gaussVort_AMR_row1.png";
+	char jpgFile1[256] = "/Volumes/Warehouse/IUTAMPaper/gaussVort/jpgOut/gaussVort_AMR_row2.png";
 	
 	
 	/* CHANGE DATA PARAMETERS */
 		double dt = 0.01;
 		double relVortMin = -12.0;
 		double relVortMax = 12.0;
-		double relVortMin2 = -8.0;
-		double relVortMax2 = 8.0;
+		double relVortMin2 = -12.0;
+		double relVortMax2 = 12.0;
 		//char scalarsDataName[16] = "relVort";
 		char scalarsDataTitle[64] = "Rel. Vort.";
 		//char scalarsDataName2[16] = "Tracer1";
@@ -194,9 +194,9 @@ int main( int argc, const char *argv[]){
 		textActor1->GetTextProperty()->SetColor(0.0,0.0,0.0);
 		
 	vtkCamera *camera = vtkCamera::New();
-		camera->SetPosition(5.0,0.0,1.0);
+// 		camera->SetPosition(5.0,0.0,1.0);
 		camera->SetViewUp(0.0,0.0,1.0);
-		camera->SetFocalPoint(0.0,-0.2,0.0);
+// 		camera->SetFocalPoint(0.0,-0.2,0.0);
 
 	vtkCamera *camera2 = vtkCamera::New();
 		camera2->SetPosition(5.0,0.0,1.0);
@@ -244,10 +244,14 @@ int main( int argc, const char *argv[]){
 	// RENDERING LOOP
 	cout << "... RENDERING ... \n";
 	
-		camera->SetPosition(2.5,-3.9686,2.0);
-		camera->SetFocalPoint(-0.1,-0.2,0.0);
-		camera2->SetPosition(2.5,-3.9686,2.0);
-		camera2->SetFocalPoint(0.0,0.0,0.0);
+// 		camera->SetPosition(2.5,-3.9686,2.0);
+// 		camera->SetFocalPoint(-0.1,-0.2,0.0);
+// 		camera2->SetPosition(2.5,-3.9686,2.0);
+// 		camera2->SetFocalPoint(0.0,0.0,0.0);
+		camera->SetPosition(2.4375,-3.8694,1.95);
+		camera->SetFocalPoint(-0.1,-0.2,0.0);		
+		camera2->SetPosition(2.4375,-3.8694,1.95);
+		camera2->SetFocalPoint(0.0,0.0,0.0);		
 		
 				
 		sphereMapper->SetInput(relVortData[0]->GetOutput());
@@ -262,10 +266,10 @@ int main( int argc, const char *argv[]){
 		writer->SetFileName(jpgFile0);
 		writer->Write();
 		
-		camera->SetPosition(2.5,-3.9686,2.0);
-		camera->SetFocalPoint(-0.1,-0.2,0.0);
-		camera2->SetPosition(2.5,-3.9686,2.0);
-		camera2->SetFocalPoint(0.0,0.0,0.0);
+// 		camera->SetPosition(2.5,-3.9686,2.0);
+// 		camera->SetFocalPoint(-0.1,-0.2,0.0);
+// 		camera2->SetPosition(2.5,-3.9686,2.0);
+// 		camera2->SetFocalPoint(0.0,0.0,0.0);
 		
 		sphereMapper->SetScalarRange(relVortMin2,relVortMax2);
 		sphereMapper->SetLookupTable(vortScale2);
