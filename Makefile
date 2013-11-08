@@ -4,7 +4,8 @@
 #  	Default	Compilers  	 #
 ##########################
 FF=ifort
-FF_FLAGS=-O2 
+#FF_FLAGS=-O0 -g -openmp -check bounds -check pointers -check uninit -traceback -warn all -debug extended
+FF_FLAGS=-O2
 CPP=icpc
 CPP_FLAGS=-O2
 
@@ -14,8 +15,8 @@ CPP_FLAGS=-O2
 MKL_INCLUDE=-I/opt/intel/composer_xe_2011_sp1.11.344/mkl/include
 MKL_LIB_DIR=-L/opt/intel/composer_xe_2011_sp1.11.344/mkl/lib
 MKL_LIBS=-lmkl_rt
-VTK_LIB_DIR=-L/usr/local/lib/vtk-5.10
-VTK_INCLUDE=-I/usr/local/include/vtk-5.10
+VTK_LIB_DIR=-L/usr/local/lib/vtk-5.8
+VTK_INCLUDE=-I/usr/local/include/vtk-5.8
 VTK_LIBS=-lvtkCommon -lvtkGraphics -lvtkRendering -lvtkViews -lvtkWidgets -lvtkImaging \
 	-lvtkHybrid -lvtkIO -lvtkFiltering
 NCL_LIB_DIR=-L/Users/pbosler/SourceCodes/ncl_ncarg-6.0/lib
@@ -177,10 +178,15 @@ plotUnifGaussVortIUTAM.exe: vtkIUTAMGaussVortUnif.o
 	g++ -o $@ vtkIUTAMGaussVortUnif.o $(VTK_INCLUDE) $(VTK_LIB_DIR) $(VTK_LIBS)	
 plotJetIUTAM.exe: vtkIUTAMJet.o
 	g++ -o $@ vtkIUTAMJet.o $(VTK_INCLUDE) $(VTK_LIB_DIR) $(VTK_LIBS)	
-
+plotGaussVortFrames.exe: vtkPlotGaussVortFrames.o
+	g++ -o $@ vtkPlotGaussVortFrames.o $(VTK_INCLUDE) $(VTK_LIB_DIR) $(VTK_LIBS)
+	
 ############################
 # VTK object files		   #
 ############################
+
+vtkPlotGaussVortFrames.o: $< vtkPlotGaussVortFrames.cpp
+	g++ -c -Wno-deprecated -O2 $< $(VTK_INCLUDE)
 vtkPlotRH4LatTransport.o: $< vtkPlotRH4LatTransport.cpp 
 	g++ -c -Wno-deprecated -O2 $< $(VTK_INCLUDE)	
 vtkPlotRelVortAndInitLat.o: vtkPlotRelVortAndInitLat.cpp

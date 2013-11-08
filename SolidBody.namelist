@@ -1,6 +1,6 @@
 &gridInit
 	panelKind = 4
-	initNest = 4
+	initNest = 3
 	remeshInterval = 1000
 	rotationRate = 6.283185307179586
 	reproject = 0
