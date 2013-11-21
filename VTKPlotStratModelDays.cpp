@@ -36,73 +36,49 @@ void GetColorForValue_BlueYellowRed(double val, double &r, double &g, double &b,
 void GetColorForValue_BlueWhiteOrangeRed(double val, double &r, double &g, double &b, double &min, double &max);
 
 int main(int argc, const char *argv[]){
-	/*  
-		Argument parsing : 
-			Arg 1 : frame interval -- plot every frameIntervalth frame
-	*/
-// 	if ( argc != 2 ){
-// 		cerr << "Usage : " << argv[0] << " <frameInterval> \n";
-// 		return 1;
-// 	}	
-	int frameOut;
-	istringstream ss(argv[1]);
-	if ( !(ss>>frameOut) ) cerr << "Invalid final frame number.";
-	/* END argument parsing */
 	int j;
 	//
 	//	Input data parameters
 	//
 	double relVortMin = -5.0;
 	double relVortMax = 5.0;
-	double dt = 0.00125;
-	//int	finalFrame = 100;
-	int finalFrame = 7200;
 	char scalarsName[16] = "relVort";
 	char scalarsLabel[16] = "Rel. Vort.";	
 	//
 	//	Set up file input and output
 	//
-	char vtkFileRoot[128] = "vtkOut/jm87_longtime_quadAMR5_rev***_dt0.001_";
+	char vtkFileRoot[128] = "jm87_quadAMR5_t";
 	char vtkFileName[128];
-	char imageFileRoot[128] ="imageOut/stratModel_";
+	char imageFileRoot[128] ="imageOut/stratModel_day";
 	char imageFileName[128];
 
-	char vtkCounterString[4];
+	char vtkCounterString[1];
 	int inputCounter = 0;
 
-	char imageCounterString[4];
-	int imageCounter = 0;
-	int nFrames = finalFrame/frameOut;
-	
+	char imageCounterString[1];
+
 	//
 	//	setup vtk file readers
 	//
-	vtkPolyDataReader *relVortData[nFrames+1];
-	vtkPolyDataReader *meshData[nFrames+1];
+	vtkPolyDataReader *relVortData[10];
+	vtkPolyDataReader *meshData[10];
 	
 	cout << "Setting up VTK file readers ... ";
 	
-	for ( inputCounter = 0; inputCounter <= finalFrame; inputCounter++ ){
-		if ( inputCounter%frameOut == 0 ){
+	for ( int i = 0; i < 10; i++ ){
 			//
 			//	create input filename strings
 			//			
-			j = sprintf(vtkCounterString,"%04d",inputCounter);
+			j = sprintf(vtkCounterString,"%d",i);
 			strcpy(vtkFileName,vtkFileRoot);
 			strcat(vtkFileName,vtkCounterString);
 			strcat(vtkFileName,".vtk");
 			//
 			//	initialize vtk readers
 			//
-			relVortData[imageCounter] = vtkPolyDataReader::New();
-			relVortData[imageCounter]->SetFileName(vtkFileName);
-			relVortData[imageCounter]->SetScalarsName(scalarsName);
-			
-			meshData[imageCounter] = vtkPolyDataReader::New();
-			meshData[imageCounter]->SetFileName(vtkFileName);
-
-			imageCounter++;
-		}
+			relVortData[i] = vtkPolyDataReader::New();
+			relVortData[i]->SetFileName(vtkFileName);
+			relVortData[i]->SetScalarsName(scalarsName);
 	}
 	cout << " ... done \n";
 	
@@ -201,23 +177,21 @@ int main(int argc, const char *argv[]){
 	cout << "RENDERING ...\n";
 	int nActive = 0;
 	char timestring[16];
-	imageCounter = 0;
-	for ( inputCounter = 0; inputCounter <= finalFrame; inputCounter++ ){
-		if ( inputCounter%frameOut == 0 ){
+	for (int i = 0; i < 10; i++ ){
 			//
 			//	link data input to image output
 			//
-			sphereMapper1->SetInput(relVortData[imageCounter]->GetOutput());
+			sphereMapper1->SetInput(relVortData[i]->GetOutput());
 			//
 			//	annotation
 			//
-			j = sprintf(timestring,"t = %6.3f",double(inputCounter)*dt);
+			j = sprintf(timestring,"t = %d",i);
 			textActor1 -> SetInput(timestring);
 			
 			//
 			//	setup output image filenames
 			//
-			j = sprintf(imageCounterString,"%04d",imageCounter);
+			j = sprintf(imageCounterString,"%d",i);
 			strcpy(imageFileName,imageFileRoot);
 			strcat(imageFileName,imageCounterString);
 			strcat(imageFileName,".png");	
@@ -233,14 +207,12 @@ int main(int argc, const char *argv[]){
 			
 			writer->Write();
 			
-			nActive = relVortData[imageCounter]->GetOutput()->GetNumberOfCells();
+			nActive = relVortData[i]->GetOutput()->GetNumberOfCells();
 
-			if ( imageCounter == nFrames/4){cout << "... 25\% done.\n";}
-			if ( imageCounter == nFrames/2){cout << "... 50\% done.\n";}
-			if ( imageCounter == 3*nFrames/4){cout << "... 75\% done.\n";}
-			
-			imageCounter++;
-		}
+// 			if ( imageCounter == nFrames/4){cout << "... 25\% done.\n";}
+// 			if ( imageCounter == nFrames/2){cout << "... 50\% done.\n";}
+// 			if ( imageCounter == 3*nFrames/4){cout << "... 75\% done.\n";}
+
 	}		
 	cout << " ... rendering complete \n";
 return 0;

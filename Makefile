@@ -180,6 +180,8 @@ plotJetIUTAM.exe: vtkIUTAMJet.o
 	g++ -o $@ vtkIUTAMJet.o $(VTK_INCLUDE) $(VTK_LIB_DIR) $(VTK_LIBS)	
 plotGaussVortFrames.exe: vtkPlotGaussVortFrames.o
 	g++ -o $@ vtkPlotGaussVortFrames.o $(VTK_INCLUDE) $(VTK_LIB_DIR) $(VTK_LIBS)
+plotStratModelDays.exe: VTKPlotStratModelDays.o
+	g++ -o $@ $< $(VTK_INCLUDE) $(VTK_LIB_DIR) $(VTK_LIBS)
 	
 ############################
 # VTK object files		   #
@@ -215,3 +217,5 @@ vtkIUTAMGaussVortUnif.o: vtkIUTAMGaussVortUnif.cpp
 	g++ -c -Wno-deprecated -O2 $< $(VTK_INCLUDE)
 vtkIUTAMJet.o: vtkIUTAMJet.cpp
 	g++ -c -Wno-deprecated -O2 $< $(VTK_INCLUDE)			
+VTKPlotStratModelDays.o: VTKPlotStratModelDays.cpp
+	g++ -c -Wno-deprecated -O2 $< $(VTK_INCLUDE)				
