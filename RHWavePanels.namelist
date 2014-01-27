@@ -8,10 +8,10 @@
 /
 &time
 	dt = 0.005
-	tfinal = 1.0
+	tfinal = 0.0
 /
 
 &fileIO
 outputDir='~/Desktop/rh4Wave/'
-	jobPrefix='tableCalcs_rm20_'
+	jobPrefix='gridPlots1b'
 /

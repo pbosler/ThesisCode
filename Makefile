@@ -15,8 +15,8 @@ CPP_FLAGS=-O2
 MKL_INCLUDE=-I/opt/intel/composer_xe_2011_sp1.11.344/mkl/include
 MKL_LIB_DIR=-L/opt/intel/composer_xe_2011_sp1.11.344/mkl/lib
 MKL_LIBS=-lmkl_rt
-VTK_LIB_DIR=-L/usr/local/lib/vtk-5.8
-VTK_INCLUDE=-I/usr/local/include/vtk-5.8
+VTK_LIB_DIR=-L/usr/local/lib/vtk-5.10
+VTK_INCLUDE=-I/usr/local/include/vtk-5.10
 VTK_LIBS=-lvtkCommon -lvtkGraphics -lvtkRendering -lvtkViews -lvtkWidgets -lvtkImaging \
 	-lvtkHybrid -lvtkIO -lvtkFiltering
 NCL_LIB_DIR=-L/Users/pbosler/SourceCodes/ncl_ncarg-6.0/lib
@@ -182,7 +182,8 @@ plotGaussVortFrames.exe: vtkPlotGaussVortFrames.o
 	g++ -o $@ vtkPlotGaussVortFrames.o $(VTK_INCLUDE) $(VTK_LIB_DIR) $(VTK_LIBS)
 plotStratModelDays.exe: VTKPlotStratModelDays.o
 	g++ -o $@ $< $(VTK_INCLUDE) $(VTK_LIB_DIR) $(VTK_LIBS)
-	
+plotGridsIUTAM.exe: vtkIUTAMgridplots.o	
+	g++ -o $@ $< $(VTK_INCLUDE) $(VTK_LIB_DIR) $(VTK_LIBS)
 ############################
 # VTK object files		   #
 ############################
@@ -218,4 +219,6 @@ vtkIUTAMGaussVortUnif.o: vtkIUTAMGaussVortUnif.cpp
 vtkIUTAMJet.o: vtkIUTAMJet.cpp
 	g++ -c -Wno-deprecated -O2 $< $(VTK_INCLUDE)			
 VTKPlotStratModelDays.o: VTKPlotStratModelDays.cpp
-	g++ -c -Wno-deprecated -O2 $< $(VTK_INCLUDE)				
+	g++ -c -Wno-deprecated -O2 $< $(VTK_INCLUDE)	
+vtkIUTAMgridplots.o: vtkIUTAMgridplots.cpp
+	g++ -c -Wno-deprecated -O2 $< $(VTK_INCLUDE)	
