@@ -1,0 +1,8 @@
+&filenames
+	vtkDataFile='/Volumes/Warehouse/IUTAMPaper/gaussVort/contourPlots/gaussVortUnif_t5_0100.vtk'
+	outputPrefix='~/Desktop/smooth_gvTri5_1_'
+/
+&interp
+	degreeSpacing=1.0
+	leftLonDeg=0.0
+/

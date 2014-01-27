@@ -40,6 +40,8 @@ PANEL_MPI_OBJS=oldStripack.o ssrfpack.o ParticlesEdgesPanels2.o TracerAndVortici
 ############################
 #  Program executables	   #
 ############################
+reformatVTKForNCL.exe: ReformatVTKforNCL.f90 $(BASE_OBJS) oldstripack.o ssrfpack.o
+	ifort -O2 -o $@ $^ ssrfpack.o
 interpParticlesVTK2NCL.exe: InterpPassivePointsVTKToNCL.o $(BASE_OBJS)
 	ifort -O2 -o interpParticlesVTK2NCL.exe InterpPassivePointsVTKToNCL.o $(BASE_OBJS)
 findStratModelPotVort.exe: StratModelPotVort.o $(BASE_OBJS) TracerAndVorticityDistributions.o

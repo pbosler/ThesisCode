@@ -21,7 +21,7 @@ panel_res@gsnMaximize         = True
 
 dataDir="/Volumes/Warehouse/IUTAMPaper/gaussVort/contourPlots/"
 
-wks = gsn_open_wks("pdf",dataDir+"peteVsJames")
+wks = gsn_open_wks("pdf",dataDir+"gaussVort_contours3b")
 
 ; James's data
 nLat = 90
@@ -39,9 +39,9 @@ deg2t2 = asciiread(deg2file2,(/ nLat, nLon /), "double")
 nLat = 181
 nLon = 360
 
-tri5file0=dataDir+"gvTri5_0__relVort.dat"
-tri5file1=dataDir+"gvTri5_1__relVort.dat"
-tri5file2=dataDir+"gvTri5_2__relVort.dat"
+tri5file0=dataDir+"smooth_gvTri5_0__relVort.dat"
+tri5file1=dataDir+"smooth_gvTri5_1__relVort.dat"
+tri5file2=dataDir+"smooth_gvTri5_2__relVort.dat"
 
 tri5t0 = asciiread(tri5file0,(/ nLat, nLon /), "double")
 tri5t1 = asciiread(tri5file1,(/ nLat, nLon /), "double")
@@ -53,12 +53,12 @@ tri5t2 = asciiread(tri5file2,(/ nLat, nLon /), "double")
 ; set contour levels
 	mnlvl = -12.0
 	mxlvl = 12.0
-	lvlSpcng = 1.0
+	lvlSpcng = 0.5
 	nCntrs = (mxlvl-mnlvl)/lvlSpcng + 1
 	
 	;gsn_define_colormap(wks,"BlWhRe")	
 	gsn_define_colormap(wks,"BlueYellowRed")	
-;	gsn_define_colormap(wks,"BlueWhiteOrangeRed")
+	;gsn_define_colormap(wks,"BlueWhiteOrangeRed")
 	;gsn_define_colormap(wks,"testcmap")
 ;
 ;	Map Resources
@@ -99,17 +99,16 @@ tri5t2 = asciiread(tri5file2,(/ nLat, nLon /), "double")
 	map_res@cnFillOn = True
 	map_res@gsnSpreadColors = True
 	map_res@gsnSpreadColorStart = 2
-	map_res@gsnSpreadColorEnd = -2
+	map_res@gsnSpreadColorEnd = -1
 	
 	map_res@lbLabelBarOn = False
 	
-	map_res@lbLabelStride = 2
+	map_res@lbLabelStride = 4
 	map_res@lbTitleFontThicknessF = 0.08
 	map_res@lbAutoManage = False
 	map_res@lbLabelFontHeightF = 0.0175
 	
 	map_res@pmTickMarkDisplayMode = "Always"
-;	map_res@pmTickMarkDisplayMode = "Never"
 	
 	map_res@cnLinesOn = False
 	map_res@cnLineDashPattern = 0
@@ -135,16 +134,15 @@ tri5t2 = asciiread(tri5file2,(/ nLat, nLon /), "double")
 	txres = True
 	txres@txPerimOn = True
 	txres@txBackgroundFillColor = "White"
-	txres@txFontHeightF = 0.035
+	txres@txFontHeightF = 0.045
 	
-	txid = gsn_create_text(wks,"Eulerian, N = 16200",txres)
-	txid2 = gsn_create_text(wks,"LPPM, N = 20480",txres)
+	txid = gsn_create_text(wks,"a)",txres)
+	txid2 = gsn_create_text(wks,"b)",txres)
 	
 	;
 	; Build the plots
 	;	
-	map_res@tiMainString = "t = 0.0"
-	map_res@tiMainFontHeightF = 0.035
+	map_res@tiMainString = "day 0"
 	
 	plot(0) = gsn_csm_contour_map_ce(wks,deg2t0,map_res)
 	annid = gsn_add_annotation(plot(0),txid,amres)
@@ -160,7 +158,7 @@ tri5t2 = asciiread(tri5file2,(/ nLat, nLon /), "double")
 ;	map_res@cnMaxLevelValF = mxlvl
 ;	map_res@cnLevelSpacingF = lvlSpcng
 	
-	map_res@tiMainString = "t = 1.0"
+	map_res@tiMainString = "day 1"
 	map_res@tiMainOn = True
 	plot(1) = gsn_csm_contour_map_ce(wks,deg2t1,map_res)
 	map_res@tiMainOn = False
@@ -174,7 +172,7 @@ tri5t2 = asciiread(tri5file2,(/ nLat, nLon /), "double")
 ;	map_res@cnLevelSpacingF = lvlSpcng
 	
 	map_res@tiMainOn = True
-	map_res@tiMainString = "t = 2.0"
+	map_res@tiMainString = "day 2"
 	plot(2) = gsn_csm_contour_map_ce(wks,deg2t2,map_res)
 	map_res@tiMainOn = False
 	plot(5) = gsn_csm_contour_map_ce(wks,tri5t2,map_res)
