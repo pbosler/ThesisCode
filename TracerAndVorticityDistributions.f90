@@ -42,7 +42,7 @@ integer(kint), parameter :: logLevel = DEBUG_LOGGING_LEVEL, logUnit=6
 interface InitGaussianVortex
 	module procedure InitGaussianVortexVoronoi
 	module procedure InitGaussianVortexPanels
-end interface					 
+end interface
 
 interface GaussianVortexX
 	module procedure GaussianVortexVector
@@ -140,14 +140,14 @@ end subroutine
 
 
 subroutine InitRH4WavePanels(aParticles,aPanels)
-! Initializes the vorticity profiles (absolute and relative) of a stationary Rossby-Haurwitz wave with zonal 
+! Initializes the vorticity profiles (absolute and relative) of a stationary Rossby-Haurwitz wave with zonal
 ! wavenumber 4 on a grid.
 	type(Particles), intent(inout) :: aParticles
 	type(Panels), intent(inout) :: aPanels
 	integer(kint) :: j
 	do j=1,aParticles%N
 		aParticles%relVort(j) = HaurwitzStationary4RelVort(aParticles%x(:,j))
-		aParticles%absVort(j) = aParticles%relVort(j) + 2.0_kreal*Omega*aParticles%x(3,j) 
+		aParticles%absVort(j) = aParticles%relVort(j) + 2.0_kreal*Omega*aParticles%x(3,j)
 	enddo
 	do j=1,aPanels%N
 		aPanels%relVort(j) = HaurwitzStationary4RelVort(aPanels%x(:,j))
@@ -205,7 +205,7 @@ end function
 
 
 function HaurwitzStationary4RelVortVector(xyz)
-! Calculates the relative vorticity as a function of position for a Rossby-Haurwitz wave 
+! Calculates the relative vorticity as a function of position for a Rossby-Haurwitz wave
 ! with zonal wavenumber 4.
 	real(kreal), intent(in) :: xyz(3)
 	real(kreal) :: HaurwitzStationary4RelVortVector
@@ -254,7 +254,7 @@ subroutine InitGaussianVortexPanels(aParticles, aPanels)
 	do j=1,aPanels%N
 		if ( .NOT. aPanels%hasChildren(j) ) then
 			gvort(j) = GaussianVortexX(aPanels%x(:,j))
-		endif 
+		endif
 	enddo
 	gaussConst = sum(gvort*aPanels%area(1:aPanels%N))/(4.0_kreal*PI)
 	do j=1,aParticles%N
@@ -268,7 +268,7 @@ subroutine InitGaussianVortexPanels(aParticles, aPanels)
 				2.0_kreal*Omega*aPanels%x0(3,j)
 			aPanels%relVort(j) = aPanels%absVort(j) - 2.0_kreal*Omega*aPanels%x(3,j)
 		else
-			aPanels%relVort(j) = 0.0_kreal	
+			aPanels%relVort(j) = 0.0_kreal
 			aPanels%absVort(j) = 0.0_kreal
 		endif
 	enddo
@@ -290,7 +290,7 @@ subroutine InitPolarVortexPanels(aParticles,aPanels)
 	enddo
 	gaussConst = sum(pvort*aPanels%area(1:aPanels%N))/(4.0_kreal*PI)
 	do j=1,aParticles%N
-		aParticles%relVort(j) = PolarVortexX(aParticles%x0(:,j)) - gaussConst 
+		aParticles%relVort(j) = PolarVortexX(aParticles%x0(:,j)) - gaussConst
 		aParticles%absVort(j) = aParticles%relVort(j) + 2.0_kreal*Omega*aParticles%x0(3,j)
 	enddo
 	do j=1,aPanels%N
@@ -367,7 +367,7 @@ subroutine InitTripole(aParticles,aPanels,cent1,cent2,cent3,beta1,beta2,beta3,st
 		if ( .NOT. aPanels%hasChildren(j)) then
 			aPanels%absVort(j) = gVort(j) + 2.0_kreal*Omega*aPanels%x(3,j) - gaussConst
 			aPanels%relVort(j) = gVort(j) - gaussConst
-		endif	
+		endif
 	enddo
 	do j=1,aParticles%N
 		aParticles%absVort(j) = TripoleX(aParticles%x(:,j),cent1,cent2,cent3,&
@@ -396,9 +396,9 @@ end subroutine
 
 
 function GaussianVortexVector(xyz)
-! Outputs the height of a Gaussian function used to calculate the relative vorticity 
+! Outputs the height of a Gaussian function used to calculate the relative vorticity
 ! asssociated with a Gaussian vortex.  The appropriate constant must be subtracted from
-! the output value of this function to give a valid vorticity profile.  
+! the output value of this function to give a valid vorticity profile.
 	real(kreal) :: GaussianVortexVector
 	real(kreal), intent(in) :: xyz(3)
 	real(kreal), parameter :: 	lat0 = PI/20.0_kreal,&
@@ -448,11 +448,11 @@ function PolarVortexComponents(x,y,z)
 	real(kreal), parameter :: lat0 = PI/2.0_kreal,&
 							  long0 = PI, &
 							  beta = 2.0_kreal
-	real(kreal) :: xc, yc, zc	
+	real(kreal) :: xc, yc, zc
 	xc = cos(lat0)*cos(long0)
 	yc = cos(lat0)*sin(long0)
 	zc = sin(lat0)
-	PolarVortexComponents = 4.0_kreal*PI*exp(-2.0_kreal*beta*beta*(1.0_kreal - (x*xc + y*yc + z*zc )))			  
+	PolarVortexComponents = 4.0_kreal*PI*exp(-2.0_kreal*beta*beta*(1.0_kreal - (x*xc + y*yc + z*zc )))
 end function
 
 
@@ -481,7 +481,7 @@ subroutine InitManyVortsPanels(aParticles, aPanels)
 	do j=1,aPanels%N
 		if ( .NOT. aPanels%hasChildren(j) ) then
 			gvort(j) = ManyVortsVector(aPanels%x(:,j))
-		endif 
+		endif
 	enddo
 	gaussConst = sum(gvort*aPanels%area(1:aPanels%N))/(4.0_kreal*PI)
 	do j=1,aParticles%N
@@ -495,7 +495,7 @@ subroutine InitManyVortsPanels(aParticles, aPanels)
 				2.0_kreal*Omega*aPanels%x0(3,j)
 			aPanels%relVort(j) = aPanels%absVort(j) - 2.0_kreal*Omega*aPanels%x(3,j)
 		else
-			aPanels%relVort(j) = 0.0_kreal	
+			aPanels%relVort(j) = 0.0_kreal
 			aPanels%absVort(j) = 0.0_kreal
 		endif
 	enddo
@@ -553,9 +553,9 @@ function Juckes_A(t)
 	real(kreal), parameter :: tfull = 4.0_kreal, &
 							  tend = 15.0_kreal
 	real(kreal) :: b
-	
+
 	b = PI/tfull
-	
+
 	if ( 0.0_kreal <= t .AND. t < tfull ) then
 		Juckes_A = 0.5_kreal*(1.0_kreal - cos(b*t))
 	elseif ( tfull <= t .AND. t < (tend-tfull) ) then
@@ -563,8 +563,8 @@ function Juckes_A(t)
 	elseif ( (tend-tfull) <= t .AND. (t < tend) ) then
 		Juckes_A = 0.5_kreal*(1.0_kreal - cos(b*(t-(tend-tfull)) + PI))
 	else
-		Juckes_A = 0.0_kreal	
-	endif							  
+		Juckes_A = 0.0_kreal
+	endif
 end function
 
 
@@ -574,9 +574,9 @@ function Juckes_APrime(t)
 	real(kreal), parameter :: tfull = 4.0_kreal, &
 							  tend = 15.0_kreal
 	real(kreal) :: b
-	
+
 	b = PI/tfull
-	
+
 	if ( 0.0_kreal <= t .AND. t < tfull ) then
 		Juckes_APrime = 0.5_kreal*b*sin(b*t)
 	elseif ( tfull <= t .AND. t < (tend-tfull) ) then
@@ -613,7 +613,7 @@ function Juckes_BVector(xyz)
 		tan1sq = tan(th1)*tan(th1)
 		Juckes_BVector = tan1sq/(tan(lat)*tan(lat))*exp(1.0_kreal - tan1sq/(tan(lat)*tan(lat)))
 	endif
-end function 
+end function
 
 function Juckes_Bscalar(lat)
 	real(kreal) :: Juckes_Bscalar
@@ -634,7 +634,7 @@ function Juckes_BPrimeVector(xyz)
 	real(kreal), intent(in) :: xyz(3)
 	real(kreal) :: lat, tan1sq, fac1, fac2
 	real(kreal), parameter :: th1 = PI/3.0_kreal
-	
+
 	lat = Latitude(xyz)
 	if ( lat < 0.0_kreal ) then
 		Juckes_BPrimeVector = 0.0_kreal
@@ -701,7 +701,7 @@ end subroutine
 
 
 subroutine InitZonalMeanVoronoi(aPanels)
-	type(VorPanels), intent(inout) :: aPanels	
+	type(VorPanels), intent(inout) :: aPanels
 	integer(kint) :: j
 	do j=1,aPanels%N
 		aPanels%relVort(j) = ZonalMeanRelVortComponents(aPanels%x0(j),aPanels%y0(j),aPanels%z0(j))
@@ -724,12 +724,12 @@ subroutine InitJetVoronoi(aPanels,theta0,beta,perturbAmp,perturbWaveNum)
 		relVortStar(j) = JetRelVortComponents(aPanels%x0(j),aPanels%y0(j),aPanels%z0(j),theta0,beta,perturbAmp,perturbWaveNum)
 	enddo
 	gaussConst = sum(relVortStar*aPanels%area(1:aPanels%N))/(4.0_kreal*PI)
-	
+
 	! Set vorticity on panels
 	do j=1,aPanels%N
 		aPanels%relVort(j) = JetRelVortComponents(aPanels%x0(j),aPanels%y0(j),aPanels%z0(j),theta0,beta,perturbAmp,perturbWaveNum) - gaussConst
 		aPanels%absVort(j) = aPanels%relVort(j) + 2.0_kreal*Omega*aPanels%z0(j)
-	enddo	
+	enddo
 	deallocate(relVortStar)
 end subroutine
 
@@ -752,11 +752,11 @@ subroutine InitJetPanels(aParticles,aPanels,theta0,beta,perturbAmp,perturbWaveNu
 		endif
 	enddo
 	gaussConst = sum(relVortStar*aPanels%area(1:aPanels%N))/(4.0_kreal*PI)
-	
+
 	! Set vorticity on panels
 	do j=1,aPanels%N
 		if (.NOT. aPanels%hasChildren(j) ) then
-			aPanels%relVort(j) = relVortStar(j) - gaussConst 
+			aPanels%relVort(j) = relVortStar(j) - gaussConst
 			aPanels%absVort(j) = relVortStar(j) - gaussConst + 2.0_kreal*Omega*aPanels%x0(3,j)
 		endif
 	enddo
@@ -765,15 +765,15 @@ subroutine InitJetPanels(aParticles,aPanels,theta0,beta,perturbAmp,perturbWaveNu
 		aParticles%relVort(j) = JetRelVortVector(aParticles%x0(:,j),theta0,beta,perturbAmp,perturbWaveNum) - gaussConst
 		aParticles%absVort(j) = aParticles%relVort(j) + 2.0_kreal*Omega*aParticles%x0(3,j)
 	enddo
-	
+
 !	theta2 = theta1 + jetThickness
 !	do j=1,aPanels%N
 !		if ( .NOT. aPanels%hasChildren(j) ) then
 !			relVortStar(j) = JetRelVortVector(aPanels%x0(:,j),nVorts,beta,theta1,jetThickness,latPerturb)
-!		endif	
+!		endif
 !	enddo
 !	gaussConst = sum(relVortStar*aPanels%area(1:aPanels%N))/(4.0_kreal*PI)
-!	
+!
 !	! Set vorticity on panels
 !	do j=1,aPanels%N
 !		if (.NOT. aPanels%hasChildren(j) ) then
@@ -795,7 +795,7 @@ subroutine InitStratosphere(aParticles,aPanels)
 	type(Panels), intent(inout) :: aPanels
 	integer(kint) :: j
 	real(kreal), allocatable :: relVortStar(:)
-	
+
 	! Determine the value of the Gauss constant
 	allocate(relVortStar(aPanels%N))
 	relVortStar = 0.0_kreal
@@ -806,7 +806,7 @@ subroutine InitStratosphere(aParticles,aPanels)
 		endif
 	enddo
 	gaussConst = sum(relVortStar*aPanels%area(1:aPanels%N))/(4.0_kreal*PI)
-	
+
 	! Set vorticity on panels
 	do j=1,aPanels%N
 		if ( .NOT. aPanels%hasChildren(j) ) then
@@ -820,7 +820,7 @@ subroutine InitStratosphere(aParticles,aPanels)
 		aParticles%absVort(j) = StratosphereRelVortX(aParticles%x0(:,j)) - gaussConst &
 			+ 2.0_kreal*Omega*aParticles%x0(3,j)
 	enddo
-	
+
 	deallocate(relVortStar)
 end subroutine
 
@@ -844,10 +844,12 @@ function JetRelVortVector(xyz,theta0,beta,perturbAmp,perturbWaveNum,strengthPert
 	lat = Latitude(xyz)
 	lon = Longitude(xyz)
 	thetaP = theta0 + perturbAmp*cos(real(perturbWaveNum,kreal)*lon)
-	JetRelVortVector = -PI/2.0_kreal*(1.0_kreal + strAmp*cos(real(strWN,kreal)*lon))*&
-		(cos(lat)*(-2.0_kreal*beta*beta*(cos(thetaP)*sin(lat) - &
-		sin(thetaP)*cos(lat))) - sin(lat))*exp(-2.0_kreal*beta*beta*&
-		(1.0_kreal - cos(lat)*cos(thetaP)-sin(lat)*sin(thetaP)))
+!	JetRelVortVector = -PI/2.0_kreal*(1.0_kreal + strAmp*cos(real(strWN,kreal)*lon))*&
+!		(cos(lat)*(-2.0_kreal*beta*beta*(cos(thetaP)*sin(lat) - &
+!		sin(thetaP)*cos(lat))) - sin(lat))*exp(-2.0_kreal*beta*beta*&
+!		(1.0_kreal - cos(lat)*cos(thetaP)-sin(lat)*sin(thetaP)))
+
+	JetRelVortVector = 300.0_kreal*sin(lat - thetaP)*exp(-2.0_kreal*beta*beta*(1.0_kreal - cos(lat-thetaP)))
 end function
 
 
@@ -860,20 +862,20 @@ end function
 !	integer(kint) :: k
 !	real(kreal) :: xCent1(3), xCent2(3), lat1, lat2
 !
-!	theta2 = theta1 + jetThickness	
+!	theta2 = theta1 + jetThickness
 !	JetRelVortVector = 0.0_kreal
 !	do k=0,nVorts-1
 !		lat1 = theta1 + latPerturb*sin(12.0_kreal*k*2.0_kreal*PI/nVorts)
 !		lat2 = theta2 + latPerturb*sin(12.0_kreal*k*2.0_kreal*PI/nVorts)
-!	   
+!
 !		xCent1(1) = cos(lat1)*cos(k*2.0_kreal*PI/nVorts)
 !		xCent1(2) = cos(lat1)*sin(k*2.0_kreal*PI/nVorts)
 !		xCent1(3) = sin(lat1)
-!	   
+!
 !		xCent2(1) = cos(lat2)*cos(k*2.0_kreal*PI/nVorts)
 !		xCent2(2) = cos(lat2)*sin(k*2.0_kreal*PI/nVorts)
 !		xCent2(3) = sin(lat2)
-!		   
+!
 !		JetRelVortVector = JetRelVortVector - GeneralGaussian(xyz,xCent1,beta)  &
 !			+ GeneralGaussian(xyz,xCent2,beta) - gaussConst
 !	enddo
@@ -886,7 +888,7 @@ function JetRelVortComponents(x,y,z,theta0,beta,perturbAmp,perturbWaveNum)
 	real(kreal) :: xyz(3)
 	xyz = [x,y,z]
 	JetRelVortComponents = JetRelVortVector(xyz,theta0,beta,perturbAmp,perturbWaveNum)
-end function 
+end function
 
 function GeneralGaussian(xyz,xCenter,beta, strength)
 	real(kreal) :: GeneralGaussian
@@ -920,18 +922,18 @@ function TripoleVortVector(xyz,cent1,cent2,cent3,beta1,beta2,beta3,strength1,str
 	real(kreal), intent(in) :: beta1, beta2, beta3
 	real(kreal), intent(in) :: strength1, strength2, strength3
 	real(kreal) :: g1, g2, g3
-	
+
 	if ( strength3 >= 0.0_kreal) then
 		print *, "Tripole error: strength3 must be negative."
 		return
 	endif
-	
+
 	g1 = GeneralGaussian(xyz,cent1,beta1,strength1)
 	g2 = GeneralGaussian(xyz,cent2,beta2,strength2)
 	g3 = GeneralGaussian(xyz,cent3,beta3,strength3)
-	
+
 	TripoleVortVector = g1 + g2 + g3
-	
+
 end function
 
 
@@ -958,7 +960,7 @@ end subroutine
 
 
 function SlottedCylindersX(xyz)
-	! This function assigns a value to a coordinate on the unit sphere corresponding to the 
+	! This function assigns a value to a coordinate on the unit sphere corresponding to the
 	! slotted cylinders mass tracer distribution in Nair & Lauritzen (2010).
 	real(kreal), intent(in) :: xyz(3)
 	real(kreal) :: SlottedCylindersX
@@ -974,7 +976,7 @@ function SlottedCylindersX(xyz)
 	r2 = SphereDistance(xyz,[xx2,yy2,zz2])
 	slottedCylindersX = b
 	if ( r1 <= RR) then
-		if ( abs(long-long1)>=RR/6.0_kreal) then	
+		if ( abs(long-long1)>=RR/6.0_kreal) then
 			slottedCylindersX = c
 		else
 			if ( lat - lat1 < -5.0_kreal*RR/12.0_kreal) slottedCylindersX = c
@@ -985,7 +987,7 @@ function SlottedCylindersX(xyz)
 			slottedCylindersX = c
 		else
 			if ( lat-lat2 > 5.0_kreal*RR/12.0_kreal) slottedCylindersX = c
-		endif 
+		endif
 	endif
 end function
 
@@ -1020,7 +1022,7 @@ function BlockMVector(xyz)
 							 !bottomLat = -7.0_kreal*PI/60.0_kreal ,&
 							 ! topLat = 7.0_kreal*PI/60.0_kreal
 	real(kreal) :: lat, lon, x, y
-	
+
 	lat = Latitude(xyz)
 	lon = atan2(xyz(2),xyz(1))
 	x = lon/unit
@@ -1043,8 +1045,8 @@ function ScaledBlockM(x,y)
 							  left = -1.0_kreal, &
 							  one = 1.0_kreal, &
 							  zero = 0.0_kreal
-							 
-	ScaledBlockM = 0.1_kreal 
+
+	ScaledBlockM = 0.1_kreal
 	! Left Foot
 	if ( (( y < -vert1) .AND. ( y > bottom )) .AND. ( (x < - horiz1) .AND. (x > left))) ScaledBlockM = one
 	! Right Foot
@@ -1053,7 +1055,7 @@ function ScaledBlockM(x,y)
 	if ( ( (y > bottom) .AND. (y < top) ) .AND. ( (x > -horiz2) .AND. (x < -horiz3 ))) ScaledBlockM = one
 	! Right Leg
 	If ( ( (y > bottom) .AND. (y<top)) .AND. ( (x>horiz3) .AND. (x<horiz2))) ScaledBlockM = one
-	! Left top 
+	! Left top
 	If ( ( (y > vert1) .AND. (y<top)) .AND. ( (x<-horiz1) .AND. (x> left))) ScaledBlockM = one
 	! Right top
 	If ( ( (y > vert1) .AND. (y<top)) .AND. ( (x<right) .AND. (x>horiz1))) ScaledBlockM = one
@@ -1090,7 +1092,7 @@ end subroutine
 
 
 function CosineBellsX(xyz)
-	! This function assigns a value to a coordinate on the unit sphere corresponding to the 
+	! This function assigns a value to a coordinate on the unit sphere corresponding to the
 	! cosine bells mass tracer distribution in Lair & Lauritzen (2010).
 	real(kreal), intent(in) :: xyz(3)
 	real(kreal) :: CosineBellsX
@@ -1135,7 +1137,7 @@ end subroutine
 
 
 function GaussianHillsX(xyz)
-	! This function assigns a value to a coordinate on the unit sphere corresponding to the 
+	! This function assigns a value to a coordinate on the unit sphere corresponding to the
 	! Gaussian hills mass tracer distribution in Lair & Lauritzen (2010).
 	real(kreal), intent(in) :: xyz(3)
 	real(kreal) :: GaussianHillsX
@@ -1236,7 +1238,7 @@ function Juckes_ForcingDerivative(xyz, dX, t)
 		u = (-xyz(2)*dX(1) + xyz(1)*dX(2))/sqrt(raxis2)
 		v = (-xyz(1)*xyz(3)*dX(1) - xyz(2)*xyz(3)*dX(2))/sqrt(raxis2) + sqrt(raxis2)*dX(3)
 		Juckes_ForcingDerivative = F0*Juckes_APrime(t)*Juckes_B(lat)*cos(lon) - & ! dF/dt
-			F0 * u * Juckes_A(t)*Juckes_B(lat)*sin(lon)/sqrt(raxis2) + & ! 
+			F0 * u * Juckes_A(t)*Juckes_B(lat)*sin(lon)/sqrt(raxis2) + & !
 			F0 * v * Juckes_A(t)*Juckes_BPrime(lat)*cos(lon)
 	endif
 end function
